@@ -1,0 +1,244 @@
+/**
+ * Settings screen.
+ *
+ * @package Live_Chat_For_Telegram
+ */
+
+.lcft-settings .lcft-actions {
+	margin: 1em 0;
+}
+
+.lcft-settings .lcft-role {
+	display: inline-block;
+	margin: 0 1.5em 0.4em 0;
+	white-space: nowrap;
+}
+
+.lcft-settings .lcft-schedule th {
+	/* No explicit width: matching core's default form-table th width (not hardcoding it) is what
+	   keeps the per-day "Open" checkboxes lined up under "Tell members when the desk is staffed"
+	   above them. */
+	padding-top: 12px;
+}
+
+.lcft-settings .lcft-schedule td {
+	padding-top: 8px;
+	padding-bottom: 8px;
+}
+
+.lcft-settings .lcft-schedule input[type="time"] {
+	vertical-align: middle;
+}
+
+.lcft-settings .lcft-token-status {
+	margin: 6px 0 0;
+	font-weight: 600;
+}
+
+.lcft-settings input[type="number"].lcft-number-wide {
+	width: 130px;
+}
+
+.lcft-diagnostics {
+	margin: 1em 0;
+	max-width: 46em;
+}
+
+.lcft-check {
+	display: flex;
+	gap: 0.6em;
+	align-items: baseline;
+	padding: 10px 12px;
+	margin-bottom: 4px;
+	border-left: 4px solid #c3c4c7;
+	background: #fff;
+	box-shadow: 0 1px 1px rgba( 0, 0, 0, 0.04 );
+}
+
+.lcft-check.is-ok {
+	border-left-color: #00a32a;
+}
+
+.lcft-check.is-warning {
+	border-left-color: #dba617;
+}
+
+.lcft-check.is-error {
+	border-left-color: #d63638;
+}
+
+.lcft-check__icon {
+	flex: 0 0 auto;
+	font-weight: 700;
+}
+
+.lcft-check.is-ok .lcft-check__icon {
+	color: #00a32a;
+}
+
+.lcft-check.is-warning .lcft-check__icon {
+	color: #dba617;
+}
+
+.lcft-check.is-error .lcft-check__icon {
+	color: #d63638;
+}
+
+.lcft-check__text {
+	word-break: break-word;
+}
+
+/* # Avatar media picker --------------------------------------------------------------------------- */
+
+.lcft-media-picker {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+	margin-top: 8px;
+}
+
+.lcft-media-picker .dashicons-admin-media {
+	vertical-align: middle;
+	margin-right: 2px;
+}
+
+.lcft-media-picker__preview {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 1px solid #c3c4c7;
+}
+
+/* # Merge-tag style placeholder picker -------------------------------------------------------------
+ *
+ * Modelled on Gravity Forms' "Insert Merge Tag" control: a small icon button sitting in the corner
+ * of the field it belongs to, opening a searchable list rather than a separate button below the
+ * field taking up its own row.
+ */
+
+.lcft-settings .large-text {
+	/* Core sizes "large-text" fields to 99%, not 100%. Fields with a placeholder picker need the
+	   full 100% for their wrapper (see .lcft-mt below) or the icon lands in the leftover 1% outside
+	   the field's real edge — and every large-text field, wrapped or not, is normalised to 100% here
+	   too, so a field without a picker (e.g. Field map with no Gravity Forms browser to show) still
+	   lines up on the same right edge as the fields next to it that do have one. */
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.lcft-mt {
+	/* Block, not inline-block: an inline-block wrapper has no defined width of its own
+	   (shrink-to-fit), which would collapse the wrapped field to its bare HTML attribute size
+	   instead of the 100% set above. */
+	position: relative;
+	display: block;
+}
+
+.lcft-mt textarea,
+.lcft-mt input[type="text"] {
+	padding-right: 34px;
+}
+
+.lcft-mt__toggle {
+	position: absolute;
+	top: 6px;
+	right: 6px;
+	width: 24px;
+	height: 24px;
+	padding: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: #f6f7f7;
+	border: 1px solid #8c8f94;
+	border-radius: 3px;
+	color: #50575e;
+	cursor: pointer;
+}
+
+.lcft-mt__toggle:hover {
+	background: #f0f0f1;
+	color: #1d2327;
+}
+
+.lcft-mt__toggle .dashicons {
+	width: 16px;
+	height: 16px;
+	font-size: 16px;
+}
+
+.lcft-mt__panel {
+	position: absolute;
+	z-index: 10;
+	top: 32px;
+	right: 6px;
+	width: 280px;
+	max-height: 300px;
+	display: flex;
+	flex-direction: column;
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	box-shadow: 0 3px 10px rgba( 0, 0, 0, 0.15 );
+}
+
+/* Same cascade-origin issue as .lcft-mt__item above: the panel's own display: flex would otherwise
+   keep it visible even while its hidden attribute is set. */
+.lcft-mt__panel[hidden] {
+	display: none;
+}
+
+.lcft-mt__search {
+	margin: 8px;
+	width: auto;
+	padding: 5px 8px;
+	font-size: 13px;
+}
+
+.lcft-mt__list {
+	overflow-y: auto;
+	padding: 0 4px 6px;
+}
+
+.lcft-mt__item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	padding: 6px 8px;
+	font-size: 13px;
+	font-family: Consolas, Monaco, monospace;
+	text-align: left;
+	color: #2271b1;
+	background: none;
+	border: none;
+	border-radius: 3px;
+	cursor: pointer;
+}
+
+.lcft-mt__item:hover {
+	background: #f0f6fc;
+}
+
+.lcft-mt__item-label {
+	flex: 1 1 auto;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.lcft-mt__item-id {
+	flex: 0 0 auto;
+	color: #8c8f94;
+	font-size: 11.5px;
+}
+
+/* An author stylesheet's display: block above always wins over the user-agent stylesheet's
+   [hidden] { display: none }, regardless of specificity — so the live search filter's hidden
+   attribute needs this explicit override to actually hide anything. */
+.lcft-mt__item[hidden] {
+	display: none;
+}

@@ -1,0 +1,510 @@
+/**
+ * The chat bubble.
+ *
+ * Scoped under .lcft and built on custom properties so a theme can restyle it without fighting
+ * specificity. The accent colour is injected inline from the settings.
+ *
+ * @package Live_Chat_For_Telegram
+ */
+
+.lcft {
+	--lcft-accent: #1c3f94;
+	--lcft-surface: #fff;
+	--lcft-text: #1d2327;
+	--lcft-muted: #646970;
+	--lcft-border: #e0e0e0;
+	--lcft-them: #f1f3f6;
+	--lcft-radius: 14px;
+
+	position: fixed;
+	bottom: 20px;
+	z-index: 99999;
+	font-size: 15px;
+	line-height: 1.45;
+	color: var( --lcft-text );
+	font-family: inherit;
+}
+
+.lcft--right {
+	right: 20px;
+}
+
+/* WordPress replaces emoji characters with <img class="emoji"> and sizes them with
+   width/height: 1em !important — but some themes (confirmed with GeneratePress) apply their own
+   unqualified "img { max-width: 100% }" reset. max-width still clamps the used width even though
+   width itself has !important, and inside a shrink-to-fit flex item that percentage resolves
+   against a circular 0-ish size, collapsing the icon to a sliver. Removing the cap here is the
+   same fix WordPress core itself already applies to the emoji rule for exactly this kind of
+   theme conflict. */
+.lcft img.emoji {
+	max-width: none !important;
+}
+
+.lcft--left {
+	left: 20px;
+}
+
+/* # Bubble ------------------------------------------------------------------------------------ */
+
+.lcft__bubble {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 0;
+	width: 56px;
+	height: 56px;
+	justify-content: center;
+	border: 0;
+	border-radius: 999px;
+	background: var( --lcft-accent );
+	color: #fff;
+	cursor: pointer;
+	box-shadow: 0 6px 20px rgba( 0, 0, 0, 0.22 );
+	transition: transform 0.15s ease;
+	text-decoration: none;
+}
+
+.lcft__bubble:hover,
+.lcft__bubble:focus-visible {
+	transform: scale( 1.05 );
+}
+
+.lcft__bubble-icon {
+	font-size: 24px;
+	line-height: 1;
+}
+
+.lcft--invite .lcft__bubble {
+	width: auto;
+	height: auto;
+	padding: 12px 18px;
+	border-radius: 999px;
+}
+
+.lcft__invite-label {
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.lcft__badge {
+	position: absolute;
+	top: -2px;
+	right: -2px;
+	min-width: 20px;
+	height: 20px;
+	padding: 0 5px;
+	border-radius: 999px;
+	background: #d63638;
+	color: #fff;
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 20px;
+	text-align: center;
+}
+
+.lcft__bubble {
+	position: relative;
+}
+
+.lcft.is-open .lcft__bubble {
+	display: none;
+}
+
+/* # Panel ------------------------------------------------------------------------------------- */
+
+.lcft__panel {
+	display: flex;
+	flex-direction: column;
+	width: 370px;
+	max-width: calc( 100vw - 40px );
+	height: 540px;
+	max-height: calc( 100vh - 100px );
+	background: var( --lcft-surface );
+	border-radius: var( --lcft-radius );
+	box-shadow: 0 12px 40px rgba( 0, 0, 0, 0.25 );
+	overflow: hidden;
+}
+
+/* An author stylesheet's normal declarations always win over the user-agent stylesheet's
+   [hidden] { display: none }, regardless of specificity — so the panel's own display: flex above
+   would otherwise keep it visible even while the hidden attribute is set. Matching [hidden]
+   explicitly, at higher specificity than the bare class, is what makes toggling it closed work. */
+.lcft__panel[hidden] {
+	display: none;
+}
+
+.lcft__header {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 12px 14px;
+	background: var( --lcft-accent );
+	color: #fff;
+	flex: 0 0 auto;
+}
+
+.lcft__avatar {
+	width: 32px;
+	height: 32px;
+	border-radius: 999px;
+	object-fit: cover;
+}
+
+.lcft__title {
+	font-weight: 600;
+	flex: 1 1 auto;
+}
+
+.lcft__close {
+	border: 0;
+	background: none;
+	color: inherit;
+	font-size: 26px;
+	line-height: 1;
+	cursor: pointer;
+	padding: 0 4px;
+	opacity: 0.85;
+}
+
+.lcft__close:hover {
+	opacity: 1;
+}
+
+.lcft__notice {
+	padding: 10px 14px;
+	background: #fcf3d6;
+	border-bottom: 1px solid var( --lcft-border );
+	font-size: 13px;
+	flex: 0 0 auto;
+}
+
+.lcft__log {
+	flex: 1 1 auto;
+	overflow-y: auto;
+	padding: 14px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	background: #fbfbfc;
+}
+
+.lcft-welcome {
+	padding: 10px 12px;
+	border-radius: 10px;
+	background: #fff;
+	border: 1px dashed var( --lcft-border );
+	color: var( --lcft-muted );
+	font-size: 14px;
+}
+
+/* # Messages ---------------------------------------------------------------------------------- */
+
+.lcft-msg {
+	max-width: 82%;
+	padding: 8px 12px;
+	border-radius: var( --lcft-radius );
+	word-wrap: break-word;
+	overflow-wrap: anywhere;
+}
+
+.lcft-msg--me {
+	align-self: flex-end;
+	background: var( --lcft-accent );
+	color: #fff;
+	border-bottom-right-radius: 4px;
+}
+
+.lcft-msg--them {
+	align-self: flex-start;
+	background: var( --lcft-them );
+	border-bottom-left-radius: 4px;
+}
+
+.lcft-msg.is-pending {
+	opacity: 0.6;
+}
+
+.lcft-msg.is-undelivered {
+	outline: 1px solid #d63638;
+}
+
+.lcft-msg__body {
+	white-space: pre-wrap;
+}
+
+.lcft-msg__body a {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.lcft-msg__meta {
+	margin-top: 4px;
+	font-size: 11px;
+	opacity: 0.75;
+}
+
+.lcft-msg__media:empty {
+	display: none;
+}
+
+.lcft-msg__media {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin-bottom: 6px;
+}
+
+.lcft-media {
+	max-width: 100%;
+	border-radius: 8px;
+}
+
+.lcft-media--image {
+	padding: 0;
+	border: 0;
+	background: none;
+	cursor: zoom-in;
+	flex: 1 1 45%;
+}
+
+.lcft-media--image img {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: 8px;
+}
+
+.lcft-media--audio,
+.lcft-media--video {
+	width: 100%;
+}
+
+.lcft-file {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 8px 10px;
+	border-radius: 8px;
+	background: rgba( 255, 255, 255, 0.25 );
+	color: inherit;
+	text-decoration: none;
+	width: 100%;
+}
+
+.lcft-msg--them .lcft-file {
+	background: #fff;
+	border: 1px solid var( --lcft-border );
+}
+
+.lcft-file__icon {
+	font-size: 22px;
+}
+
+.lcft-file__body {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.lcft-file__name {
+	font-weight: 600;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.lcft-file__meta {
+	font-size: 11px;
+	opacity: 0.75;
+}
+
+/* # Composer ---------------------------------------------------------------------------------- */
+
+.lcft__composer {
+	display: flex;
+	align-items: flex-end;
+	gap: 6px;
+	padding: 10px;
+	border-top: 1px solid var( --lcft-border );
+	background: var( --lcft-surface );
+	flex: 0 0 auto;
+}
+
+.lcft__input {
+	flex: 1 1 auto;
+	resize: none;
+	border: 1px solid var( --lcft-border );
+	border-radius: 10px;
+	padding: 9px 11px;
+	font: inherit;
+	line-height: 1.4;
+	max-height: 120px;
+	background: #fff;
+	color: var( --lcft-text );
+}
+
+.lcft__input:focus {
+	outline: 2px solid var( --lcft-accent );
+	outline-offset: -1px;
+}
+
+.lcft__attach,
+.lcft__emoji,
+.lcft__send {
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 38px;
+	height: 38px;
+	border: 0;
+	border-radius: 10px;
+	cursor: pointer;
+	font-size: 17px;
+	background: transparent;
+	color: var( --lcft-muted );
+}
+
+.lcft__send {
+	background: var( --lcft-accent );
+	color: #fff;
+}
+
+.lcft.has-file .lcft__attach {
+	background: var( --lcft-accent );
+	color: #fff;
+}
+
+/* # Emoji picker ------------------------------------------------------------------------------- */
+
+.lcft__emoji-wrap {
+	position: relative;
+	flex: 0 0 auto;
+}
+
+.lcft__emoji-panel {
+	position: absolute;
+	z-index: 5;
+	bottom: calc( 100% + 8px );
+	right: 0;
+	width: 248px;
+	max-height: 180px;
+	overflow-y: auto;
+	display: grid;
+	grid-template-columns: repeat( 8, 1fr );
+	gap: 2px;
+	padding: 8px;
+	background: var( --lcft-surface );
+	border: 1px solid var( --lcft-border );
+	border-radius: 10px;
+	box-shadow: 0 8px 24px rgba( 0, 0, 0, 0.18 );
+}
+
+/* An author stylesheet's normal declarations always win over the user-agent stylesheet's
+   [hidden] { display: none }, regardless of specificity — the panel's own display: grid above
+   would otherwise keep it visible even while the hidden attribute is set. */
+.lcft__emoji-panel[hidden] {
+	display: none;
+}
+
+.lcft__emoji-item {
+	border: 0;
+	background: none;
+	font-size: 19px;
+	line-height: 1;
+	padding: 5px;
+	border-radius: 6px;
+	cursor: pointer;
+}
+
+.lcft__emoji-item:hover {
+	background: var( --lcft-them );
+}
+
+/* # Lightbox ---------------------------------------------------------------------------------- */
+
+.lcft-lightbox {
+	position: fixed;
+	inset: 0;
+	z-index: 100000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+	background: rgba( 0, 0, 0, 0.82 );
+	cursor: zoom-out;
+}
+
+.lcft-lightbox img {
+	max-width: 100%;
+	max-height: 100%;
+	border-radius: 6px;
+}
+
+/* # Small screens ----------------------------------------------------------------------------- */
+
+@media ( max-width: 480px ) {
+
+	.lcft {
+		bottom: 12px;
+	}
+
+	.lcft--right {
+		right: 12px;
+	}
+
+	.lcft--left {
+		left: 12px;
+	}
+
+	/* A 370px panel on a phone is a window inside a window. Full screen is the only readable
+	   option once the keyboard is up. */
+	.lcft.is-open .lcft__panel {
+		position: fixed;
+		inset: 0;
+		width: 100vw;
+		max-width: none;
+		height: 100dvh;
+		max-height: none;
+		border-radius: 0;
+	}
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+
+	.lcft__bubble {
+		transition: none;
+	}
+}
+
+@media ( prefers-color-scheme: dark ) {
+
+	.lcft {
+		--lcft-surface: #1e1f23;
+		--lcft-text: #e6e6e9;
+		--lcft-muted: #a7aaad;
+		--lcft-border: #3a3b40;
+		--lcft-them: #2c2e34;
+	}
+
+	.lcft__log {
+		background: #17181b;
+	}
+
+	.lcft__input {
+		background: #24262b;
+	}
+
+	.lcft-welcome {
+		background: #24262b;
+	}
+
+	.lcft__notice {
+		background: #3a3320;
+		color: #f0e3c0;
+	}
+
+	.lcft-msg--them .lcft-file {
+		background: #24262b;
+	}
+}

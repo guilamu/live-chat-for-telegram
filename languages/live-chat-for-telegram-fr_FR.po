@@ -1,0 +1,871 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Live Chat for Telegram 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/guilamu/live-chat-for-telegram/"
+"issues\n"
+"POT-Creation-Date: 2026-08-04T00:00:00+00:00\n"
+"PO-Revision-Date: 2026-08-04 12:29+0200\n"
+"Last-Translator: Guilamu\n"
+"Language-Team: French\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.9\n"
+"X-Domain: live-chat-for-telegram\n"
+
+#: live-chat-for-telegram.php:240
+msgid "More information about Live Chat for Telegram"
+msgstr "Plus d'informations sur Live Chat for Telegram"
+
+#: live-chat-for-telegram.php:147 live-chat-for-telegram.php:241
+#: live-chat-for-telegram.php:248
+msgid "Live Chat for Telegram"
+msgstr "Live Chat for Telegram"
+
+#: live-chat-for-telegram.php:242
+msgid "View details"
+msgstr "Voir les détails"
+
+#: live-chat-for-telegram.php:249
+msgid "🐛 Report a Bug"
+msgstr "🐛 Signaler un bug"
+
+#: live-chat-for-telegram.php:254
+msgid "🐛 Report a Bug (install Bug Reporter)"
+msgstr "🐛 Signaler un bug (installer Bug Reporter)"
+
+#: includes/class-lcft-attachments.php:78
+msgid "No file was received."
+msgstr "Aucun fichier n'a été reçu."
+
+#: includes/class-lcft-attachments.php:82
+msgid "The file could not be uploaded."
+msgstr "Le fichier n'a pas pu être envoyé."
+
+#. translators: %s: The maximum file size, already formatted.
+#: includes/class-lcft-attachments.php:92
+msgid "That file is too large. The limit is %s."
+msgstr "Ce fichier est trop volumineux. La limite est de %s."
+
+#: includes/class-lcft-attachments.php:102
+msgid "That file type is not allowed."
+msgstr "Ce type de fichier n'est pas autorisé."
+
+#: includes/class-lcft-attachments.php:115
+msgid "The file could not be saved."
+msgstr "Le fichier n'a pas pu être enregistré."
+
+#. translators: %s: The maximum size, already formatted.
+#: includes/class-lcft-attachments.php:160
+msgid ""
+"Telegram will not hand back files over %s, so this one could not be "
+"delivered."
+msgstr ""
+"Telegram ne renvoie pas les fichiers de plus de %s, celui-ci n'a donc pas pu "
+"être livré."
+
+#: includes/class-lcft-attachments.php:330
+msgid "The file could not be recorded."
+msgstr "Le fichier n'a pas pu être enregistré en base."
+
+#: includes/class-lcft-attachments.php:358
+msgid "The upload directory could not be created."
+msgstr "Le dossier d'envoi n'a pas pu être créé."
+
+#: includes/class-lcft-admin.php:64 includes/class-lcft-admin.php:65
+msgid "Live Chat"
+msgstr "Live Chat"
+
+#: includes/class-lcft-admin.php:99
+msgid "Working…"
+msgstr "Chargement…"
+
+#: includes/class-lcft-admin.php:100
+msgid "The request failed."
+msgstr "La requête a échoué."
+
+#: includes/class-lcft-admin.php:101
+msgid "Choose an avatar"
+msgstr "Choisir un avatar"
+
+#: includes/class-lcft-admin.php:102
+msgid "Use this image"
+msgstr "Utiliser cette image"
+
+#: includes/class-lcft-admin.php:118
+msgid "Connection"
+msgstr "Connexion"
+
+#: includes/class-lcft-admin.php:119
+msgid "Widget"
+msgstr "Widget"
+
+#: includes/class-lcft-admin.php:120
+msgid "Hours"
+msgstr "Horaires"
+
+#: includes/class-lcft-admin.php:121
+msgid "Member details"
+msgstr "Détails des membres"
+
+#: includes/class-lcft-admin.php:122 includes/class-lcft-admin.php:442
+msgid "Advanced"
+msgstr "Avancé"
+
+#: includes/class-lcft-admin.php:134 includes/class-lcft-admin.php:482
+msgid "You are not allowed to change these settings."
+msgstr "Vous n'êtes pas autorisé à modifier ces réglages."
+
+#: includes/class-lcft-admin.php:155
+msgid "Add a bot token and a group before the chat can run."
+msgstr ""
+"Ajoutez un jeton de bot et un groupe avant que le chat ne puisse fonctionner."
+
+#: includes/class-lcft-admin.php:162
+msgid "Settings saved."
+msgstr "Réglages enregistrés."
+
+#: includes/class-lcft-admin.php:207 includes/class-lcft-admin.php:220
+#: includes/class-lcft-diagnostics.php:67
+msgid "Bot token"
+msgstr "Jeton du bot"
+
+#: includes/class-lcft-admin.php:208
+msgid ""
+"is defined in wp-config.php, so the token is not stored in the database."
+msgstr ""
+"est défini dans wp-config.php, le jeton n'est donc pas stocké dans la base "
+"de données."
+
+#: includes/class-lcft-admin.php:224
+msgid ""
+"A token is saved. The field stays empty for security — leave it blank to "
+"keep it, or type a new one to replace it."
+msgstr ""
+"Un jeton est enregistré. Le champ reste vide pour des raisons de sécurité — "
+"laissez-le vide pour le conserver, ou saisissez-en un nouveau pour le "
+"remplacer."
+
+#: includes/class-lcft-admin.php:225
+msgid "No token saved yet."
+msgstr "Aucun jeton enregistré pour le moment."
+
+#. translators: %s: A link to BotFather.
+#: includes/class-lcft-admin.php:229
+msgid ""
+"Create a bot with %s and paste its token. Use a bot dedicated to this site: "
+"a bot can only deliver updates to one place."
+msgstr ""
+"Créez un bot avec %s et collez son jeton. Utilisez un bot dédié à ce site : "
+"un bot ne peut livrer ses mises à jour qu'à un seul endroit."
+
+#: includes/class-lcft-admin.php:236
+msgid "Group ID"
+msgstr "ID du groupe"
+
+#: includes/class-lcft-admin.php:238
+msgid ""
+"The supergroup where conversations appear, for example <code>-1001234567890</"
+"code>. You can paste a message link from the group instead and the ID will "
+"be worked out. Topics must be enabled, and the bot must be an administrator "
+"able to manage them."
+msgstr ""
+"Le supergroupe où apparaissent les conversations, par exemple "
+"<code>-1001234567890</code>. Vous pouvez coller un lien de message du groupe "
+"à la place, l'ID sera déduit automatiquement. Les sujets doivent être "
+"activés, et le bot doit être administrateur avec le droit de les gérer."
+
+#: includes/class-lcft-admin.php:243
+msgid "Status"
+msgstr "État"
+
+#: includes/class-lcft-admin.php:244
+msgid ""
+"Checks run in the order a message travels, so the first failure is the one "
+"to fix."
+msgstr ""
+"Les vérifications s'exécutent dans l'ordre de circulation d'un message, la "
+"première qui échoue est donc celle à corriger."
+
+#: includes/class-lcft-admin.php:247
+msgid "Run checks"
+msgstr "Lancer les vérifications"
+
+#: includes/class-lcft-admin.php:248
+msgid "Register webhook"
+msgstr "Enregistrer le webhook"
+
+#: includes/class-lcft-admin.php:249
+msgid "Detect group"
+msgstr "Détecter le groupe"
+
+#: includes/class-lcft-admin.php:250
+msgid "Remove webhook"
+msgstr "Supprimer le webhook"
+
+#: includes/class-lcft-admin.php:251
+msgid "Send a test message"
+msgstr "Envoyer un message test"
+
+#: includes/class-lcft-admin.php:257
+msgid "Telegram delivers updates to this address:"
+msgstr "Telegram livre les mises à jour à cette adresse :"
+
+#: includes/class-lcft-admin.php:271
+msgid "Show the bubble"
+msgstr "Afficher la bulle"
+
+#: includes/class-lcft-admin.php:272
+msgid "Display the chat bubble on the site"
+msgstr "Afficher la bulle de chat sur le site"
+
+#: includes/class-lcft-admin.php:276
+msgid "Support name"
+msgstr "Nom du support"
+
+#: includes/class-lcft-admin.php:278
+msgid ""
+"Shown to the member on every reply. A single name for the whole team is "
+"intentional: they are talking to a support desk, not to whichever phone "
+"answered."
+msgstr ""
+"Affiché au membre à chaque réponse. Un nom unique pour toute l'équipe est "
+"volontaire : le membre s'adresse à un service de support, pas à celui qui a "
+"répondu depuis son téléphone."
+
+#: includes/class-lcft-admin.php:281
+msgid "Avatar URL"
+msgstr "URL de l'avatar"
+
+#: includes/class-lcft-admin.php:284
+msgid "Welcome message"
+msgstr "Message d'accueil"
+
+#: includes/class-lcft-admin.php:286
+msgid "Shown above the conversation when the member has never written."
+msgstr ""
+"Affiché au-dessus de la conversation lorsque le membre n'a encore jamais "
+"écrit."
+
+#: includes/class-lcft-admin.php:290
+msgid "Position"
+msgstr "Position"
+
+#: includes/class-lcft-admin.php:294
+msgid "Bottom right"
+msgstr "En bas à droite"
+
+#: includes/class-lcft-admin.php:295
+msgid "Bottom left"
+msgstr "En bas à gauche"
+
+#: includes/class-lcft-admin.php:300
+msgid "Accent colour"
+msgstr "Couleur d'accent"
+
+#: includes/class-lcft-admin.php:303
+msgid "Open automatically"
+msgstr "Ouverture automatique"
+
+#: includes/class-lcft-admin.php:304
+msgid "seconds"
+msgstr "secondes"
+
+#: includes/class-lcft-admin.php:305
+msgid "Zero leaves the bubble closed until the member clicks it."
+msgstr "Zéro laisse la bulle fermée jusqu'à ce que le membre clique dessus."
+
+#: includes/class-lcft-admin.php:309
+msgid "Signed out visitors"
+msgstr "Visiteurs non connectés"
+
+#: includes/class-lcft-admin.php:313
+msgid "Show nothing"
+msgstr "Ne rien afficher"
+
+#: includes/class-lcft-admin.php:314
+msgid "Show the bubble, inviting them to sign in"
+msgstr "Afficher la bulle, en les invitant à se connecter"
+
+#: includes/class-lcft-admin.php:317
+msgid ""
+"The chat itself is for signed in members only. That is what keeps spam out: "
+"there is no anonymous way in."
+msgstr ""
+"Le chat lui-même est réservé aux membres connectés. C'est ce qui empêche le "
+"spam : il n'existe aucun moyen d'y accéder anonymement."
+
+#: includes/class-lcft-admin.php:321
+msgid "Limit to roles"
+msgstr "Limiter à certains rôles"
+
+#: includes/class-lcft-admin.php:323
+msgid "Leave everything unticked to allow every signed in user."
+msgstr "Ne rien cocher pour autoriser tous les utilisateurs connectés."
+
+#: includes/class-lcft-admin.php:339
+msgid "Opening hours"
+msgstr "Horaires d'ouverture"
+
+#: includes/class-lcft-admin.php:340
+msgid "Tell members when the desk is staffed"
+msgstr "Indiquer aux membres quand le service est assuré"
+
+#: includes/class-lcft-admin.php:341
+msgid ""
+"Messages are always accepted. Outside these hours the member is told when to "
+"expect an answer rather than being turned away."
+msgstr ""
+"Les messages sont toujours acceptés. En dehors de ces horaires, le membre "
+"est informé du délai de réponse plutôt que d'être ignoré."
+
+#: includes/class-lcft-admin.php:358
+msgid "Open"
+msgstr "Ouvert"
+
+#: includes/class-lcft-admin.php:361
+msgid "to"
+msgstr "à"
+
+#: includes/class-lcft-admin.php:373
+msgid "Exceptions"
+msgstr "Exceptions"
+
+#: includes/class-lcft-admin.php:375
+msgid ""
+"One per line: <code>2026-08-15 = closed</code>, or <code>2026-08-15 = "
+"09:00-12:00</code> for a short day. Exceptions override the weekly pattern."
+msgstr ""
+"Une par ligne : <code>2026-08-15 = closed</code>, ou <code>2026-08-15 = "
+"09:00-12:00</code> pour une journée réduite. Les exceptions remplacent le "
+"planning hebdomadaire."
+
+#: includes/class-lcft-admin.php:379
+msgid "Closed message"
+msgstr "Message de fermeture"
+
+#: includes/class-lcft-admin.php:381
+msgid "Leave empty to announce the next opening automatically."
+msgstr "Laisser vide pour annoncer automatiquement la prochaine ouverture."
+
+#: includes/class-lcft-admin.php:394
+msgid ""
+"Each member gets one Telegram topic, named from their details, with a card "
+"pinned at the top. Gravity Forms is optional: without it the details come "
+"from the WordPress account alone."
+msgstr ""
+"Chaque membre dispose d'un sujet Telegram, nommé d'après ses informations, "
+"avec une fiche épinglée en haut. Gravity Forms est optionnel : sans lui, les "
+"informations proviennent uniquement du compte WordPress."
+
+#: includes/class-lcft-admin.php:399
+msgid "Gravity Forms form"
+msgstr "Formulaire Gravity Forms"
+
+#: includes/class-lcft-admin.php:402
+msgid "The form members register with. Zero disables the lookup."
+msgstr "Le formulaire d'inscription des membres. Zéro désactive la recherche."
+
+#: includes/class-lcft-admin.php:403
+msgid "Gravity Forms is not active, so this is ignored."
+msgstr "Gravity Forms n'est pas actif, ce réglage est donc ignoré."
+
+#: includes/class-lcft-admin.php:407
+msgid "Field map"
+msgstr "Correspondance des champs"
+
+#: includes/class-lcft-admin.php:409
+msgid ""
+"One per line, <code>name = field ID</code>. Each name becomes a "
+"<code>{placeholder}</code> below. <code>user_id</code> and <code>email</"
+"code> are also used to match a member to their entry."
+msgstr ""
+"Une par ligne, <code>nom = ID du champ</code>. Chaque nom devient un "
+"<code>{placeholder}</code> ci-dessous. <code>user_id</code> et <code>email</"
+"code> servent aussi à associer un membre à son entrée."
+
+#: includes/class-lcft-admin.php:413
+msgid "Topic title"
+msgstr "Titre du sujet"
+
+#: includes/class-lcft-admin.php:415
+msgid ""
+"Placeholders that resolve to nothing are removed, along with the punctuation "
+"left around them."
+msgstr ""
+"Les placeholders qui ne renvoient rien sont supprimés, ainsi que la "
+"ponctuation qui les entoure."
+
+#: includes/class-lcft-admin.php:419
+msgid "Pinned card"
+msgstr "Fiche épinglée"
+
+#: includes/class-lcft-admin.php:421
+msgid ""
+"Telegram HTML: <code>&lt;b&gt;</code>, <code>&lt;i&gt;</code>, "
+"<code>&lt;code&gt;</code>, <code>&lt;a&gt;</code>. Leave empty for a default "
+"card built from the account. Whatever you put here is sent to Telegram, so "
+"only include what the team needs."
+msgstr ""
+"HTML Telegram : <code>&lt;b&gt;</code>, <code>&lt;i&gt;</code>, "
+"<code>&lt;code&gt;</code>, <code>&lt;a&gt;</code>. Laisser vide pour une "
+"fiche par défaut construite à partir du compte. Tout ce qui est saisi ici "
+"est envoyé à Telegram, n'incluez donc que ce dont l'équipe a besoin."
+
+#: includes/class-lcft-admin.php:437
+msgid "Attachments"
+msgstr "Pièces jointes"
+
+#: includes/class-lcft-admin.php:438
+msgid "Let members send files"
+msgstr "Autoriser les membres à envoyer des fichiers"
+
+#: includes/class-lcft-admin.php:442
+msgid "Emoji"
+msgstr "Emoji"
+
+#: includes/class-lcft-admin.php:443
+msgid "Let members insert emoji from the composer"
+msgstr "Autoriser les membres à insérer des emojis depuis le champ de saisie"
+
+#: includes/class-lcft-admin.php:447
+msgid "Maximum upload"
+msgstr "Envoi maximum"
+
+#: includes/class-lcft-admin.php:448
+msgid "bytes"
+msgstr "octets"
+
+#. translators: %s: The download limit, already formatted.
+#: includes/class-lcft-admin.php:451
+msgid ""
+"Telegram accepts up to 50 MB, but only hands files back under %s — so a "
+"reply carrying a larger file cannot reach the member."
+msgstr ""
+"Telegram accepte jusqu'à 50 Mo, mais ne renvoie que les fichiers de moins de "
+"%s — une réponse contenant un fichier plus volumineux ne peut donc pas "
+"atteindre le membre."
+
+#: includes/class-lcft-admin.php:457
+msgid "Polling interval"
+msgstr "Intervalle d'interrogation"
+
+#: includes/class-lcft-admin.php:458
+msgid "milliseconds"
+msgstr "millisecondes"
+
+#: includes/class-lcft-admin.php:459
+msgid ""
+"How often an open bubble checks for a reply. The widget slows down on its "
+"own when the tab is in the background."
+msgstr ""
+"Fréquence à laquelle une bulle ouverte vérifie l'arrivée d'une réponse. Le "
+"widget ralentit automatiquement lorsque l'onglet est en arrière-plan."
+
+#: includes/class-lcft-admin.php:463
+msgid "Keep messages for"
+msgstr "Conserver les messages pendant"
+
+#: includes/class-lcft-admin.php:464
+msgid "days"
+msgstr "jours"
+
+#: includes/class-lcft-admin.php:465
+msgid ""
+"Zero keeps everything. Anything else deletes older messages and their files "
+"daily. The Telegram side is never touched."
+msgstr ""
+"Zéro conserve tout. Toute autre valeur supprime quotidiennement les anciens "
+"messages et leurs fichiers. Le côté Telegram n'est jamais modifié."
+
+#: includes/class-lcft-admin.php:645
+msgid "You are not allowed to do that."
+msgstr "Vous n'êtes pas autorisé à faire cela."
+
+#: includes/class-lcft-admin.php:676
+msgid "Webhook registered."
+msgstr "Webhook enregistré."
+
+#: includes/class-lcft-admin.php:694
+msgid "Webhook removed. Replies will no longer reach the site."
+msgstr "Webhook supprimé. Les réponses n'atteindront plus le site."
+
+#: includes/class-lcft-admin.php:711
+msgid ""
+"Nothing received yet. Register the webhook, post any message in the group, "
+"then try again."
+msgstr ""
+"Rien reçu pour le moment. Enregistrez le webhook, publiez un message dans le "
+"groupe, puis réessayez."
+
+#. translators: 1: The group name. 2: The group ID.
+#: includes/class-lcft-admin.php:721
+msgid ""
+"Found \"%1$s\" (%2$s), but Topics are turned off in it. Turn them on, then "
+"detect again — converting a group changes its ID."
+msgstr ""
+"« %1$s » (%2$s) trouvé, mais les sujets y sont désactivés. Activez-les, puis "
+"relancez la détection — convertir un groupe change son ID."
+
+#. translators: 1: The group name. 2: The group ID.
+#: includes/class-lcft-admin.php:735
+msgid "Saved \"%1$s\" (%2$s). Reload this page to see it in the field."
+msgstr ""
+"« %1$s » (%2$s) enregistré. Rechargez cette page pour le voir dans le champ."
+
+#. translators: %s: The site name.
+#: includes/class-lcft-admin.php:757
+msgid ""
+"Test message from %s. If you can read this, the site can reach the group."
+msgstr ""
+"Message test depuis %s. Si vous pouvez lire ceci, le site peut joindre le "
+"groupe."
+
+#: includes/class-lcft-admin.php:767
+msgid "Sent. Check the group."
+msgstr "Envoyé. Vérifiez le groupe."
+
+#: includes/class-lcft-admin.php:837
+msgid "Paste the token"
+msgstr "Collez le jeton"
+
+#: includes/class-lcft-admin.php:838
+msgid "Stored — type a new one to replace it"
+msgstr "Enregistré — saisissez-en un nouveau pour le remplacer"
+
+#: includes/class-lcft-admin.php:846
+msgid "Clear"
+msgstr "Effacer"
+
+#: includes/class-lcft-admin.php:942
+msgid "Choose from Media Library"
+msgstr "Choisir depuis la médiathèque"
+
+#: includes/class-lcft-admin.php:995
+msgid "Insert placeholder"
+msgstr "Insérer un placeholder"
+
+#: includes/class-lcft-admin.php:999
+msgid "Search placeholders…"
+msgstr "Rechercher des placeholders…"
+
+#. translators: %d: The field ID, used when a field has no label.
+#: includes/class-lcft-admin.php:1051
+msgid "Field #%d"
+msgstr "Champ n°%d"
+
+#: includes/class-lcft-admin.php:1104
+msgid "Browse form fields"
+msgstr "Parcourir les champs du formulaire"
+
+#: includes/class-lcft-admin.php:1108
+msgid "Search fields…"
+msgstr "Rechercher des champs…"
+
+#: includes/class-lcft-conversations.php:197
+msgid "No Telegram group has been configured."
+msgstr "Aucun groupe Telegram n'a été configuré."
+
+#: includes/class-lcft-conversations.php:217
+msgid "Telegram did not return a topic ID."
+msgstr "Telegram n'a pas renvoyé d'ID de sujet."
+
+#: includes/class-lcft-rest.php:121
+msgid "You need to be signed in to use the chat."
+msgstr "Vous devez être connecté pour utiliser le chat."
+
+#: includes/class-lcft-rest.php:129
+msgid "Your account does not have access to the chat."
+msgstr "Votre compte n'a pas accès au chat."
+
+#: includes/class-lcft-rest.php:292 includes/class-lcft-rest.php:302
+msgid "File not found."
+msgstr "Fichier introuvable."
+
+#. translators: %d: The WordPress user ID.
+#: includes/class-lcft-member.php:121
+msgid "Member #%d"
+msgstr "Membre n°%d"
+
+#: includes/class-lcft-member.php:162
+msgid "Open profile"
+msgstr "Voir le profil"
+
+#: includes/class-lcft-chat.php:43 includes/class-lcft-telegram-api.php:292
+msgid "The message is empty."
+msgstr "Le message est vide."
+
+#: includes/class-lcft-chat.php:49
+msgid "The conversation could not be opened."
+msgstr "La conversation n'a pas pu être ouverte."
+
+#: includes/class-lcft-chat.php:57
+msgid "Attachments are not accepted."
+msgstr "Les pièces jointes ne sont pas acceptées."
+
+#: includes/class-lcft-chat.php:77
+msgid "The message could not be saved."
+msgstr "Le message n'a pas pu être enregistré."
+
+#: includes/class-lcft-chat.php:201
+msgid "Telegram accepted nothing."
+msgstr "Telegram n'a rien accepté."
+
+#: includes/class-lcft-github-updater.php:844
+msgid "Unable to rename the update folder. Please retry or update manually."
+msgstr ""
+"Impossible de renommer le dossier de mise à jour. Réessayez ou effectuez la "
+"mise à jour manuellement."
+
+#: includes/class-lcft-diagnostics.php:72
+msgid "No token has been set yet."
+msgstr "Aucun jeton n'a encore été défini."
+
+#. translators: %s: The error returned by Telegram.
+#: includes/class-lcft-diagnostics.php:86
+msgid "Telegram rejected the token: %s"
+msgstr "Telegram a rejeté le jeton : %s"
+
+#. translators: %s: The bot's username.
+#: includes/class-lcft-diagnostics.php:100
+msgid "Connected as @%s."
+msgstr "Connecté en tant que @%s."
+
+#: includes/class-lcft-diagnostics.php:118
+msgid "Group"
+msgstr "Groupe"
+
+#: includes/class-lcft-diagnostics.php:124
+msgid "No group has been set yet."
+msgstr "Aucun groupe n'a encore été défini."
+
+#. translators: %s: The error returned by Telegram.
+#: includes/class-lcft-diagnostics.php:138
+msgid ""
+"The group could not be read: %s Add the bot to the group first, then check "
+"the ID."
+msgstr ""
+"Le groupe n'a pas pu être lu : %s Ajoutez d'abord le bot au groupe, puis "
+"vérifiez l'ID."
+
+#. translators: %s: The group name.
+#: includes/class-lcft-diagnostics.php:157
+msgid ""
+"\"%s\" found, but Topics are turned off. Turn them on in the group settings."
+msgstr ""
+"« %s » trouvé, mais les sujets sont désactivés. Activez-les dans les "
+"réglages du groupe."
+
+#. translators: %s: The group name.
+#: includes/class-lcft-diagnostics.php:171
+msgid "\"%s\", with Topics enabled."
+msgstr "« %s », avec les sujets activés."
+
+#: includes/class-lcft-diagnostics.php:190
+msgid "Bot permissions"
+msgstr "Droits du bot"
+
+#: includes/class-lcft-diagnostics.php:193
+msgid "The bot ID could not be read, so its rights were not checked."
+msgstr ""
+"L'ID du bot n'a pas pu être lu, ses droits n'ont donc pas été vérifiés."
+
+#. translators: %s: The error returned by Telegram.
+#: includes/class-lcft-diagnostics.php:204
+msgid "The rights could not be checked: %s"
+msgstr "Les droits n'ont pas pu être vérifiés : %s"
+
+#: includes/class-lcft-diagnostics.php:216
+msgid ""
+"The bot is not an administrator of the group, so it cannot create topics."
+msgstr ""
+"Le bot n'est pas administrateur du groupe, il ne peut donc pas créer de "
+"sujets."
+
+#: includes/class-lcft-diagnostics.php:224
+msgid ""
+"The bot is an administrator but is missing the \"Manage topics\" permission."
+msgstr "Le bot est administrateur mais n'a pas le droit « Gérer les sujets »."
+
+#: includes/class-lcft-diagnostics.php:228
+msgid "Administrator, with permission to manage topics."
+msgstr "Administrateur, avec le droit de gérer les sujets."
+
+#: includes/class-lcft-diagnostics.php:242
+msgid "Webhook"
+msgstr "Webhook"
+
+#. translators: %s: The error returned by Telegram.
+#: includes/class-lcft-diagnostics.php:251
+msgid "The webhook could not be read: %s"
+msgstr "Le webhook n'a pas pu être lu : %s"
+
+#: includes/class-lcft-diagnostics.php:261
+msgid ""
+"No webhook is registered. Replies from Telegram will not reach the site."
+msgstr ""
+"Aucun webhook n'est enregistré. Les réponses de Telegram n'atteindront pas "
+"le site."
+
+#. translators: %s: The URL currently registered.
+#: includes/class-lcft-diagnostics.php:272
+msgid ""
+"This bot is delivering updates to another address: %s Give this site its own "
+"bot, or take the webhook over."
+msgstr ""
+"Ce bot livre ses mises à jour à une autre adresse : %s Donnez à ce site son "
+"propre bot, ou reprenez le webhook."
+
+#. translators: 1: The last error Telegram saw. 2: The number of undelivered updates.
+#: includes/class-lcft-diagnostics.php:287
+msgid "Registered, but Telegram last saw: %1$s (%2$d update(s) waiting)."
+msgstr ""
+"Enregistré, mais Telegram a vu pour la dernière fois : %1$s (%2$d mise(s) à "
+"jour en attente)."
+
+#: includes/class-lcft-diagnostics.php:294
+msgid "Registered and delivering."
+msgstr "Enregistré et opérationnel."
+
+#: includes/class-lcft-telegram-api.php:288
+#: includes/class-lcft-telegram-api.php:315
+#: includes/class-lcft-telegram-api.php:341
+msgid "No Telegram chat ID was provided."
+msgstr "Aucun ID de discussion Telegram n'a été fourni."
+
+#: includes/class-lcft-telegram-api.php:557
+msgid "No file identifier was provided."
+msgstr "Aucun identifiant de fichier n'a été fourni."
+
+#: includes/class-lcft-telegram-api.php:579
+msgid "No file path was provided."
+msgstr "Aucun chemin de fichier n'a été fourni."
+
+#. translators: %d: The HTTP response code.
+#: includes/class-lcft-telegram-api.php:618
+msgid "The file could not be downloaded from Telegram (HTTP %d)."
+msgstr "Le fichier n'a pas pu être téléchargé depuis Telegram (HTTP %d)."
+
+#: includes/class-lcft-telegram-api.php:748
+msgid "No Telegram bot token has been configured."
+msgstr "Aucun jeton de bot Telegram n'a été configuré."
+
+#: includes/class-lcft-telegram-api.php:773
+msgid "The message could not be encoded for sending."
+msgstr "Le message n'a pas pu être encodé pour l'envoi."
+
+#. translators: %d: The HTTP response code.
+#: includes/class-lcft-telegram-api.php:809
+msgid "The API returned an unexpected response (HTTP %d)."
+msgstr "L'API a renvoyé une réponse inattendue (HTTP %d)."
+
+#. translators: %s: The file name.
+#: includes/class-lcft-telegram-api.php:875
+#: includes/class-lcft-telegram-api.php:889
+msgid "The file %s could not be read."
+msgstr "Le fichier %s n'a pas pu être lu."
+
+#: includes/class-lcft-schedule.php:90
+msgid ""
+"We are closed at the moment. Leave your message and we will get back to you."
+msgstr ""
+"Nous sommes fermés pour le moment. Laissez votre message, nous vous "
+"répondrons."
+
+#. translators: %s: A day and time, for example "Monday at 9:00 am".
+#: includes/class-lcft-schedule.php:95
+msgid ""
+"We are closed at the moment. Leave your message and we will answer from %s."
+msgstr ""
+"Nous sommes fermés pour le moment. Laissez votre message, nous vous "
+"répondrons à partir de %s."
+
+#. translators: %s: A time of day.
+#: includes/class-lcft-schedule.php:223
+msgid "today at %s"
+msgstr "aujourd'hui à %s"
+
+#. translators: %s: A time of day.
+#: includes/class-lcft-schedule.php:228
+msgid "tomorrow at %s"
+msgstr "demain à %s"
+
+#. translators: 1: A weekday name. 2: A time of day.
+#: includes/class-lcft-schedule.php:233
+msgid "%1$s at %2$s"
+msgstr "%1$s à %2$s"
+
+#: includes/class-lcft-settings.php:60
+msgid "Support"
+msgstr "Support"
+
+#: includes/class-lcft-widget.php:114 includes/class-lcft-widget.php:173
+msgid "Write your message…"
+msgstr "Écrivez votre message…"
+
+#: includes/class-lcft-widget.php:115 includes/class-lcft-widget.php:201
+msgid "Send"
+msgstr "Envoyer"
+
+#: includes/class-lcft-widget.php:116 includes/class-lcft-widget.php:192
+#: includes/class-lcft-widget.php:195
+msgid "Attach a file"
+msgstr "Joindre un fichier"
+
+#: includes/class-lcft-widget.php:117 includes/class-lcft-widget.php:164
+msgid "Close"
+msgstr "Fermer"
+
+#: includes/class-lcft-widget.php:118 includes/class-lcft-widget.php:207
+msgid "Open the chat"
+msgstr "Ouvrir le chat"
+
+#: includes/class-lcft-widget.php:119
+msgid "You"
+msgstr "Vous"
+
+#: includes/class-lcft-widget.php:120
+msgid "Sending…"
+msgstr "Envoi…"
+
+#: includes/class-lcft-widget.php:121
+msgid "Not delivered. It is saved and will be picked up."
+msgstr "Non livré. Il est enregistré et sera repris."
+
+#: includes/class-lcft-widget.php:122
+msgid "edited"
+msgstr "modifié"
+
+#: includes/class-lcft-widget.php:123
+msgid "That file is too large."
+msgstr "Ce fichier est trop volumineux."
+
+#: includes/class-lcft-widget.php:124
+msgid "Download"
+msgstr "Télécharger"
+
+#: includes/class-lcft-widget.php:125
+msgid "Your browser cannot play this recording."
+msgstr "Votre navigateur ne peut pas lire cet enregistrement."
+
+#: includes/class-lcft-widget.php:126
+msgid "Your session has expired. Reload the page to carry on."
+msgstr "Votre session a expiré. Rechargez la page pour continuer."
+
+#: includes/class-lcft-widget.php:127
+msgid "The message could not be sent."
+msgstr "Le message n'a pas pu être envoyé."
+
+#: includes/class-lcft-widget.php:171
+msgid "Your message"
+msgstr "Votre message"
+
+#: includes/class-lcft-widget.php:179 includes/class-lcft-widget.php:181
+msgid "Insert an emoji"
+msgstr "Insérer un emoji"
+
+#: includes/class-lcft-widget.php:228
+msgid "Sign in to chat with us"
+msgstr "Connectez-vous pour discuter avec nous"

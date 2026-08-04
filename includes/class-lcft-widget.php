@@ -1,0 +1,277 @@
+<?php
+/**
+ * The chat bubble on the front end.
+ *
+ * @package Live_Chat_For_Telegram
+ */
+
+// Don't load directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Class LCFT_Widget
+ *
+ * Prints the bubble and hands the browser everything it needs to run it.
+ *
+ * The markup is deliberately a shell: messages are never rendered server side, because the widget
+ * has to draw them as they arrive anyway and two rendering paths would drift apart.
+ *
+ * @since 0.1.0
+ */
+class LCFT_Widget {
+
+	/**
+	 * Hooks the widget up.
+	 *
+	 * @since 0.1.0
+	 */
+	public static function init() {
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue' ) );
+		add_action( 'wp_footer', array( __CLASS__, 'render' ) );
+	}
+
+	/**
+	 * Indicates whether the bubble should appear on this request.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return bool
+	 */
+	public static function should_display() {
+
+		if ( ! LCFT_Settings::get( 'widget_enabled', true ) || is_admin() ) {
+			return false;
+		}
+
+		if ( ! LCFT_Settings::is_configured() ) {
+			return false;
+		}
+
+		$excluded = (array) LCFT_Settings::get( 'excluded_post_ids', array() );
+
+		if ( $excluded && is_singular() && in_array( get_the_ID(), array_map( 'intval', $excluded ), true ) ) {
+			return false;
+		}
+
+		// A signed out visitor either sees an invitation to sign in, or nothing at all. They never
+		// see a composer: there is no anonymous way into the chat.
+		if ( ! LCFT_Settings::user_can_chat() ) {
+			return 'invite' === LCFT_Settings::get( 'logged_out_mode', 'hide' ) && ! is_user_logged_in();
+		}
+
+		/**
+		 * Filters whether the chat bubble is printed on this request.
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param bool $display Whether to print the bubble.
+		 */
+		return (bool) apply_filters( 'lcft_should_display', true );
+	}
+
+	/**
+	 * Loads the widget's assets.
+	 *
+	 * @since 0.1.0
+	 */
+	public static function enqueue() {
+
+		if ( ! self::should_display() ) {
+			return;
+		}
+
+		wp_enqueue_style( 'lcft-widget', LCFT_URL . 'assets/css/widget.css', array(), LCFT_VERSION );
+
+		$accent = LCFT_Settings::get( 'widget_accent', '#1c3f94' );
+
+		wp_add_inline_style(
+			'lcft-widget',
+			':root{--lcft-accent:' . esc_attr( $accent ) . ';}'
+		);
+
+		// A signed out visitor gets the stylesheet and the button, and no script at all: there is
+		// nothing for it to do but send them to the login page, which a link already does.
+		if ( ! LCFT_Settings::user_can_chat() ) {
+			return;
+		}
+
+		wp_enqueue_script( 'lcft-widget', LCFT_URL . 'assets/js/widget.js', array(), LCFT_VERSION, true );
+
+		wp_localize_script(
+			'lcft-widget',
+			'lcftWidget',
+			array(
+				'root'         => esc_url_raw( rest_url( LCFT_Settings::REST_NAMESPACE ) ),
+				'nonce'        => wp_create_nonce( 'wp_rest' ),
+				'pollInterval' => (int) LCFT_Settings::get( 'poll_interval', 3000 ),
+				'autoOpen'     => (int) LCFT_Settings::get( 'auto_open_delay', 0 ),
+				'attachments'  => (bool) LCFT_Settings::get( 'attachments_enabled', true ),
+				'maxUpload'    => (int) LCFT_Settings::get( 'max_upload_bytes', 10485760 ),
+				'i18n'         => array(
+					'title'        => LCFT_Settings::get( 'agent_name', __( 'Support', 'live-chat-for-telegram' ) ),
+					'placeholder'  => __( 'Write your message…', 'live-chat-for-telegram' ),
+					'send'         => __( 'Send', 'live-chat-for-telegram' ),
+					'attach'       => __( 'Attach a file', 'live-chat-for-telegram' ),
+					'close'        => __( 'Close', 'live-chat-for-telegram' ),
+					'open'         => __( 'Open the chat', 'live-chat-for-telegram' ),
+					'you'          => __( 'You', 'live-chat-for-telegram' ),
+					'sending'      => __( 'Sending…', 'live-chat-for-telegram' ),
+					'undelivered'  => __( 'Not delivered. It is saved and will be picked up.', 'live-chat-for-telegram' ),
+					'edited'       => __( 'edited', 'live-chat-for-telegram' ),
+					'tooLarge'     => __( 'That file is too large.', 'live-chat-for-telegram' ),
+					'download'     => __( 'Download', 'live-chat-for-telegram' ),
+					'audioFallback' => __( 'Your browser cannot play this recording.', 'live-chat-for-telegram' ),
+					'expired'      => __( 'Your session has expired. Reload the page to carry on.', 'live-chat-for-telegram' ),
+					'failed'       => __( 'The message could not be sent.', 'live-chat-for-telegram' ),
+				),
+			)
+		);
+	}
+
+	/**
+	 * Prints the bubble.
+	 *
+	 * @since 0.1.0
+	 */
+	public static function render() {
+
+		if ( ! self::should_display() ) {
+			return;
+		}
+
+		$position = 'left' === LCFT_Settings::get( 'widget_position', 'right' ) ? 'lcft--left' : 'lcft--right';
+
+		if ( ! LCFT_Settings::user_can_chat() ) {
+			self::render_invitation( $position );
+
+			return;
+		}
+
+		?>
+		<div class="lcft <?php echo esc_attr( $position ); ?>" data-lcft hidden>
+			<div class="lcft__panel" role="dialog" aria-live="polite"
+				aria-label="<?php echo esc_attr( LCFT_Settings::get( 'agent_name' ) ); ?>" data-lcft-panel hidden>
+
+				<header class="lcft__header">
+					<?php $avatar = LCFT_Settings::get( 'agent_avatar_url' ); ?>
+					<?php if ( $avatar ) : ?>
+						<img class="lcft__avatar" src="<?php echo esc_url( $avatar ); ?>" alt="" width="32" height="32" />
+					<?php endif; ?>
+					<span class="lcft__title"><?php echo esc_html( LCFT_Settings::get( 'agent_name' ) ); ?></span>
+					<button type="button" class="lcft__close" data-lcft-close
+						aria-label="<?php esc_attr_e( 'Close', 'live-chat-for-telegram' ); ?>">&times;</button>
+				</header>
+
+				<div class="lcft__notice" data-lcft-notice hidden></div>
+				<div class="lcft__log" data-lcft-log tabindex="0"></div>
+
+				<form class="lcft__composer" data-lcft-form>
+					<label class="screen-reader-text" for="lcft-input"><?php esc_html_e( 'Your message', 'live-chat-for-telegram' ); ?></label>
+					<textarea id="lcft-input" class="lcft__input" rows="1" data-lcft-input
+						placeholder="<?php esc_attr_e( 'Write your message…', 'live-chat-for-telegram' ); ?>"></textarea>
+
+					<?php if ( LCFT_Settings::get( 'emoji_enabled', true ) ) : ?>
+						<div class="lcft__emoji-wrap">
+							<button type="button" class="lcft__emoji" data-lcft-emoji-toggle
+								aria-haspopup="true" aria-expanded="false"
+								title="<?php esc_attr_e( 'Insert an emoji', 'live-chat-for-telegram' ); ?>">
+								<span aria-hidden="true">🙂</span>
+								<span class="screen-reader-text"><?php esc_html_e( 'Insert an emoji', 'live-chat-for-telegram' ); ?></span>
+							</button>
+							<div class="lcft__emoji-panel" data-lcft-emoji-panel hidden>
+								<?php foreach ( self::emoji_set() as $emoji ) : ?>
+									<button type="button" class="lcft__emoji-item" data-lcft-emoji="<?php echo esc_attr( $emoji ); ?>"><?php echo esc_html( $emoji ); ?></button>
+								<?php endforeach; ?>
+							</div>
+						</div>
+					<?php endif; ?>
+
+					<?php if ( LCFT_Settings::get( 'attachments_enabled', true ) ) : ?>
+						<label class="lcft__attach" title="<?php esc_attr_e( 'Attach a file', 'live-chat-for-telegram' ); ?>">
+							<input type="file" data-lcft-file hidden />
+							<span aria-hidden="true">📎</span>
+							<span class="screen-reader-text"><?php esc_html_e( 'Attach a file', 'live-chat-for-telegram' ); ?></span>
+						</label>
+					<?php endif; ?>
+
+					<button type="submit" class="lcft__send">
+						<span aria-hidden="true">➤</span>
+						<span class="screen-reader-text"><?php esc_html_e( 'Send', 'live-chat-for-telegram' ); ?></span>
+					</button>
+				</form>
+			</div>
+
+			<button type="button" class="lcft__bubble" data-lcft-toggle
+				aria-label="<?php esc_attr_e( 'Open the chat', 'live-chat-for-telegram' ); ?>">
+				<span class="lcft__bubble-icon" aria-hidden="true">💬</span>
+				<span class="lcft__badge" data-lcft-badge hidden>0</span>
+			</button>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Prints the signed out variant: a button that leads to the login page.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param string $position The position class.
+	 */
+	protected static function render_invitation( $position ) {
+
+		?>
+		<div class="lcft lcft--invite <?php echo esc_attr( $position ); ?>">
+			<a class="lcft__bubble" href="<?php echo esc_url( wp_login_url( self::current_url() ) ); ?>">
+				<span class="lcft__bubble-icon" aria-hidden="true">💬</span>
+				<span class="lcft__invite-label"><?php esc_html_e( 'Sign in to chat with us', 'live-chat-for-telegram' ); ?></span>
+			</a>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Returns the URL of the current request, to return to after signing in.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return string
+	 */
+	protected static function current_url() {
+
+		global $wp;
+
+		return home_url( add_query_arg( array(), $wp->request ) );
+	}
+
+	/**
+	 * Returns the emoji offered by the composer's picker.
+	 *
+	 * A fixed, curated set rather than a full emoji keyboard: this is a support chat, not a
+	 * messaging app, and a short list beats scrolling through thousands of symbols nobody sends to
+	 * a union rep.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @return string[]
+	 */
+	protected static function emoji_set() {
+
+		$emoji = array(
+			'😀', '😁', '😂', '🤣', '😊', '😉', '😍', '😘', '😜', '🤔',
+			'😐', '😴', '😢', '😭', '😡', '😱', '🥳', '😎', '🙄', '🥲',
+			'👍', '👎', '👏', '🙏', '💪', '🤝', '👋', '✌️', '🤞', '👌',
+			'❤️', '🔥', '🎉', '⭐', '✅', '❌', '❗', '❓', '💯', '🙌',
+		);
+
+		/**
+		 * Filters the emoji offered by the chat composer's picker.
+		 *
+		 * @since 0.1.0
+		 *
+		 * @param string[] $emoji The emoji, as literal characters.
+		 */
+		return apply_filters( 'lcft_emoji_set', $emoji );
+	}
+}
