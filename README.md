@@ -226,6 +226,9 @@ Set a retention period under **Advanced** to delete old messages and their files
 
 ## Changelog
 
+### 1.1.3 - 2026-10-05
+- **Improved:** The three dots of the chat button bounce briefly every 30 seconds, like someone typing (disabled when the visitor prefers reduced motion)
+
 ### 1.1.2 - 2026-10-05
 - **Fixed:** The pinned card help text now lists the Telegram tags actually accepted
 - **Improved:** The chat button shows a clean SVG speech bubble in the button's text colour instead of the 💬 emoji

@@ -96,6 +96,35 @@
 	height: 26px;
 }
 
+/* The dots bounce in turn for about a second, then rest: one cycle every 30 seconds draws the
+   eye without becoming the kind of constant motion people learn to ignore. */
+.lcft__dot {
+	transform-box: fill-box;
+	transform-origin: center;
+	animation: lcft-dots 30s ease-in-out 3s infinite;
+}
+
+.lcft__dot:nth-child( 3 ) {
+	animation-delay: 3.15s;
+}
+
+.lcft__dot:nth-child( 4 ) {
+	animation-delay: 3.3s;
+}
+
+@keyframes lcft-dots {
+
+	0%,
+	2.4%,
+	100% {
+		transform: translateY( 0 );
+	}
+
+	1.2% {
+		transform: translateY( -2.5px );
+	}
+}
+
 .lcft--invite .lcft__bubble {
 	width: auto;
 	height: auto;
@@ -501,6 +530,10 @@
 
 	.lcft__bubble {
 		transition: none;
+	}
+
+	.lcft__dot {
+		animation: none;
 	}
 }
 

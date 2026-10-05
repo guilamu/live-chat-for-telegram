@@ -283,7 +283,8 @@ class LCFT_Widget {
 	 * Returns the speech bubble icon shown on the chat button.
 	 *
 	 * An inline SVG rather than an emoji: an emoji is drawn by the visitor's system font, or swapped
-	 * for an image by WordPress, so it never matches the theme. The SVG takes the text colour.
+	 * for an image by WordPress, so it never matches the theme. The SVG takes the text colour, and
+	 * its three dots bounce briefly every 30 seconds, like someone typing.
 	 *
 	 * @since 1.1.2
 	 *
@@ -293,9 +294,9 @@ class LCFT_Widget {
 
 		return '<svg class="lcft__icon" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">'
 			. '<path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.6-5.1A8.5 8.5 0 1 1 21 11.5z"/>'
-			. '<circle cx="8.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>'
-			. '<circle cx="12.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>'
-			. '<circle cx="16.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>'
+			. '<circle class="lcft__dot" cx="8.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>'
+			. '<circle class="lcft__dot" cx="12.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>'
+			. '<circle class="lcft__dot" cx="16.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>'
 			. '</svg>';
 	}
 
