@@ -69,6 +69,10 @@ class LCFT_Widget {
 			return false;
 		}
 
+		if ( ! LCFT_Settings::get( 'widget_in_builders', false ) && self::is_builder_request() ) {
+			return false;
+		}
+
 		$excluded = (array) LCFT_Settings::get( 'excluded_post_ids', array() );
 
 		if ( $excluded && is_singular() && in_array( get_the_ID(), array_map( 'intval', $excluded ), true ) ) {
@@ -89,6 +93,40 @@ class LCFT_Widget {
 		 * @param bool $display Whether to print the bubble.
 		 */
 		return (bool) apply_filters( 'lcft_should_display', true );
+	}
+
+	/**
+	 * Indicates whether the page is being edited or previewed in a page builder rather than visited.
+	 *
+	 * @since 1.1.8
+	 *
+	 * @return bool
+	 */
+	public static function is_builder_request() {
+
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only detection.
+		$builder_params = array( 'et_fb', 'et_pb_preview', 'et_bfb', 'et_block_layout_preview', 'app_window', 'elementor-preview', 'fl_builder', 'ct_builder', 'bricks', 'brizy-edit-iframe', 'vc_editable' );
+
+		foreach ( $builder_params as $param ) {
+			if ( isset( $_GET[ $param ] ) ) {
+				return true;
+			}
+		}
+		// phpcs:enable
+
+		$is_builder = is_customize_preview()
+			|| ( function_exists( 'et_core_is_fb_enabled' ) && et_core_is_fb_enabled() )
+			|| ( defined( 'IFRAME_REQUEST' ) && IFRAME_REQUEST );
+
+		/**
+		 * Filters whether the current request is a page builder or editor preview, where the bubble
+		 * is hidden unless "Also display the bubble while editing pages" is checked.
+		 *
+		 * @since 1.1.8
+		 *
+		 * @param bool $is_builder Whether the request comes from a page builder.
+		 */
+		return (bool) apply_filters( 'lcft_is_builder_request', $is_builder );
 	}
 
 	/**

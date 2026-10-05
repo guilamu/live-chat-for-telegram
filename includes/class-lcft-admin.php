@@ -287,6 +287,12 @@ class LCFT_Admin {
 		);
 
 		self::row(
+			__( 'Page builders', 'live-chat-for-telegram' ),
+			self::checkbox_field( 'widget_in_builders', __( 'Also display the bubble while editing pages', 'live-chat-for-telegram' ) ),
+			__( 'Off by default: the bubble is hidden in the Divi Visual Builder, the block editor and theme customizer previews, Elementor and Beaver Builder, where it only gets in the way of editing.', 'live-chat-for-telegram' )
+		);
+
+		self::row(
 			__( 'Support name', 'live-chat-for-telegram' ),
 			self::text_field( 'agent_name' ),
 			__( 'Shown to the member on every reply. A single name for the whole team is intentional: they are talking to a support desk, not to whichever phone answered.', 'live-chat-for-telegram' )
@@ -541,6 +547,7 @@ class LCFT_Admin {
 
 			case 'widget':
 				$values['widget_enabled']   = ! empty( $_POST['widget_enabled'] );
+				$values['widget_in_builders'] = ! empty( $_POST['widget_in_builders'] );
 				$values['agent_name']       = isset( $_POST['agent_name'] ) ? sanitize_text_field( wp_unslash( $_POST['agent_name'] ) ) : '';
 				$values['agent_avatar_url'] = isset( $_POST['agent_avatar_url'] ) ? esc_url_raw( wp_unslash( $_POST['agent_avatar_url'] ) ) : '';
 				$values['welcome_message']  = isset( $_POST['welcome_message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['welcome_message'] ) ) : '';

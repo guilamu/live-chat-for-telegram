@@ -897,3 +897,12 @@ msgstr "Aujourd'hui"
 #: includes/class-lcft-widget.php
 msgid "Yesterday"
 msgstr "Hier"
+
+msgid "Page builders"
+msgstr "Constructeurs de pages"
+
+msgid "Also display the bubble while editing pages"
+msgstr "Afficher aussi la bulle pendant l'édition des pages"
+
+msgid "Off by default: the bubble is hidden in the Divi Visual Builder, the block editor and theme customizer previews, Elementor and Beaver Builder, where it only gets in the way of editing."
+msgstr "Désactivé par défaut : la bulle est masquée dans le Visual Builder de Divi, les aperçus de l'éditeur de blocs et de l'outil de personnalisation, Elementor et Beaver Builder, où elle ne fait que gêner l'édition."

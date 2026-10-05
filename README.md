@@ -169,6 +169,11 @@ add_filter( 'lcft_should_display', function ( $display ) {
 	return $display && ! is_page( 'checkout' );
 } );
 
+// Treat another editor's preview as a page builder (the bubble is hidden there by default).
+add_filter( 'lcft_is_builder_request', function ( $is_builder ) {
+	return $is_builder || isset( $_GET['my_builder_preview'] );
+} );
+
 // Allow more file types.
 add_filter( 'lcft_allowed_mimes', function ( $mimes ) {
 	$mimes['zip'] = 'application/zip';
@@ -225,6 +230,9 @@ Set a retention period under **Advanced** to delete old messages and their files
 ```
 
 ## Changelog
+
+### 1.1.8 - 2026-10-05
+- **New:** The chat bubble is hidden while editing pages (Divi Visual Builder, block editor and customizer previews, Elementor, Beaver Builder…). A "Page builders" option on the Widget tab shows it again, and the `lcft_is_builder_request` filter adjusts the detection
 
 ### 1.1.7 - 2026-10-05
 - **New:** The conversation shows the date once per day, above that day's first message (Today, Yesterday, then the full date)
