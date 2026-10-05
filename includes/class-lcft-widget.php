@@ -239,7 +239,7 @@ class LCFT_Widget {
 
 			<button type="button" class="lcft__bubble" data-lcft-toggle
 				aria-label="<?php esc_attr_e( 'Open the chat', 'live-chat-for-telegram' ); ?>">
-				<span class="lcft__bubble-icon" aria-hidden="true">💬</span>
+				<span class="lcft__bubble-icon" aria-hidden="true"><?php echo self::chat_icon(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static markup. ?></span>
 				<span class="lcft__badge" data-lcft-badge hidden>0</span>
 			</button>
 		</div>
@@ -258,7 +258,7 @@ class LCFT_Widget {
 		?>
 		<div class="lcft lcft--invite <?php echo esc_attr( $position ); ?>">
 			<a class="lcft__bubble" href="<?php echo esc_url( wp_login_url( self::current_url() ) ); ?>">
-				<span class="lcft__bubble-icon" aria-hidden="true">💬</span>
+				<span class="lcft__bubble-icon" aria-hidden="true"><?php echo self::chat_icon(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static markup. ?></span>
 				<span class="lcft__invite-label"><?php esc_html_e( 'Sign in to chat with us', 'live-chat-for-telegram' ); ?></span>
 			</a>
 		</div>
@@ -277,6 +277,26 @@ class LCFT_Widget {
 		global $wp;
 
 		return home_url( add_query_arg( array(), $wp->request ) );
+	}
+
+	/**
+	 * Returns the speech bubble icon shown on the chat button.
+	 *
+	 * An inline SVG rather than an emoji: an emoji is drawn by the visitor's system font, or swapped
+	 * for an image by WordPress, so it never matches the theme. The SVG takes the text colour.
+	 *
+	 * @since 1.1.2
+	 *
+	 * @return string
+	 */
+	protected static function chat_icon() {
+
+		return '<svg class="lcft__icon" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">'
+			. '<path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.6-5.1A8.5 8.5 0 1 1 21 11.5z"/>'
+			. '<circle cx="8.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>'
+			. '<circle cx="12.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>'
+			. '<circle cx="16.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>'
+			. '</svg>';
 	}
 
 	/**

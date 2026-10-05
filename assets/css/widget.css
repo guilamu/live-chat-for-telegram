@@ -86,8 +86,14 @@
 }
 
 .lcft__bubble-icon {
-	font-size: 24px;
+	display: flex;
 	line-height: 1;
+}
+
+.lcft__icon {
+	display: block;
+	width: 26px;
+	height: 26px;
 }
 
 .lcft--invite .lcft__bubble {

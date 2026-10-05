@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Live Chat for Telegram 1.1.1\n"
+"Project-Id-Version: Live Chat for Telegram 1.1.2\n"
 "Report-Msgid-Bugs-To: https://github.com/guilamu/live-chat-for-telegram/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -338,7 +338,7 @@ msgid "Pinned card"
 msgstr ""
 
 #: includes/class-lcft-admin.php:421
-msgid "Telegram HTML: <code>&lt;b&gt;</code>, <code>&lt;i&gt;</code>, <code>&lt;code&gt;</code>, <code>&lt;a&gt;</code>. Leave empty for a default card built from the account. Whatever you put here is sent to Telegram, so only include what the team needs."
+msgid "Telegram HTML: <code>&lt;b&gt;</code>, <code>&lt;i&gt;</code>, <code>&lt;u&gt;</code>, <code>&lt;s&gt;</code>, <code>&lt;tg-spoiler&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;code&gt;</code>, <code>&lt;pre&gt;</code>, <code>&lt;blockquote&gt;</code>. Other tags are removed. Leave empty for a default card built from the account. Whatever you put here is sent to Telegram, so only include what the team needs."
 msgstr ""
 
 #: includes/class-lcft-admin.php:437

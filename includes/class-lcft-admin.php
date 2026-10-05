@@ -447,7 +447,7 @@ class LCFT_Admin {
 		self::row(
 			__( 'Pinned card', 'live-chat-for-telegram' ),
 			self::with_placeholders( self::textarea_field( 'card_template', 6 ), 'card_template' ),
-			__( 'Telegram HTML: <code>&lt;b&gt;</code>, <code>&lt;i&gt;</code>, <code>&lt;code&gt;</code>, <code>&lt;a&gt;</code>. Leave empty for a default card built from the account. Whatever you put here is sent to Telegram, so only include what the team needs.', 'live-chat-for-telegram' )
+			__( 'Telegram HTML: <code>&lt;b&gt;</code>, <code>&lt;i&gt;</code>, <code>&lt;u&gt;</code>, <code>&lt;s&gt;</code>, <code>&lt;tg-spoiler&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;code&gt;</code>, <code>&lt;pre&gt;</code>, <code>&lt;blockquote&gt;</code>. Other tags are removed. Leave empty for a default card built from the account. Whatever you put here is sent to Telegram, so only include what the team needs.', 'live-chat-for-telegram' )
 		);
 
 		echo '</tbody></table>';

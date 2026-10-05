@@ -226,6 +226,10 @@ Set a retention period under **Advanced** to delete old messages and their files
 
 ## Changelog
 
+### 1.1.2 - 2026-10-05
+- **Fixed:** The pinned card help text now lists the Telegram tags actually accepted
+- **Improved:** The chat button shows a clean SVG speech bubble in the button's text colour instead of the 💬 emoji
+
 ### 1.1.1 - 2026-10-05
 - **Fixed:** The accent colour picked in the settings is now actually applied; the stylesheet's default used to override it
 - **New:** The widget follows the theme's main colour (Divi 5 global colours, block theme presets) and Divi 5 global fonts, and exposes more custom properties for styling

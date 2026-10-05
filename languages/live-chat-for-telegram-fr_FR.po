@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Live Chat for Telegram 1.1.1\n"
+"Project-Id-Version: Live Chat for Telegram 1.1.2\n"
 "Report-Msgid-Bugs-To: https://github.com/guilamu/live-chat-for-telegram/"
 "issues\n"
 "POT-Creation-Date: 2026-08-04T00:00:00+00:00\n"
@@ -407,16 +407,8 @@ msgid "Pinned card"
 msgstr "Fiche épinglée"
 
 #: includes/class-lcft-admin.php:421
-msgid ""
-"Telegram HTML: <code>&lt;b&gt;</code>, <code>&lt;i&gt;</code>, "
-"<code>&lt;code&gt;</code>, <code>&lt;a&gt;</code>. Leave empty for a default "
-"card built from the account. Whatever you put here is sent to Telegram, so "
-"only include what the team needs."
-msgstr ""
-"HTML Telegram : <code>&lt;b&gt;</code>, <code>&lt;i&gt;</code>, "
-"<code>&lt;code&gt;</code>, <code>&lt;a&gt;</code>. Laisser vide pour une "
-"fiche par défaut construite à partir du compte. Tout ce qui est saisi ici "
-"est envoyé à Telegram, n'incluez donc que ce dont l'équipe a besoin."
+msgid "Telegram HTML: <code>&lt;b&gt;</code>, <code>&lt;i&gt;</code>, <code>&lt;u&gt;</code>, <code>&lt;s&gt;</code>, <code>&lt;tg-spoiler&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;code&gt;</code>, <code>&lt;pre&gt;</code>, <code>&lt;blockquote&gt;</code>. Other tags are removed. Leave empty for a default card built from the account. Whatever you put here is sent to Telegram, so only include what the team needs."
+msgstr "HTML Telegram : <code>&lt;b&gt;</code>, <code>&lt;i&gt;</code>, <code>&lt;u&gt;</code>, <code>&lt;s&gt;</code>, <code>&lt;tg-spoiler&gt;</code>, <code>&lt;a&gt;</code>, <code>&lt;code&gt;</code>, <code>&lt;pre&gt;</code>, <code>&lt;blockquote&gt;</code>. Les autres balises sont retirées. Laisser vide pour une fiche par défaut construite à partir du compte. Tout ce qui est saisi ici est envoyé à Telegram, n'incluez donc que ce dont l'équipe a besoin."
 
 #: includes/class-lcft-admin.php:437
 msgid "Attachments"
