@@ -279,6 +279,48 @@
 	}
 
 	/**
+	 * Adds the waiting animation to a message which has not reached Telegram yet.
+	 *
+	 * The member is not told about a failure: the site keeps trying on its own, so all they need
+	 * to know is that the message is on its way.
+	 *
+	 * @param {HTMLElement} bubble The message bubble.
+	 */
+	function markWaiting( bubble ) {
+		if ( bubble.querySelector( '.lcft-msg__dots' ) ) {
+			return;
+		}
+
+		bubble.classList.add( 'is-undelivered' );
+
+		var dots = document.createElement( 'span' );
+		dots.className = 'lcft-msg__dots';
+		dots.setAttribute( 'role', 'img' );
+		dots.setAttribute( 'aria-label', config.i18n.sending );
+
+		for ( var i = 0; i < 3; i++ ) {
+			dots.appendChild( document.createElement( 'span' ) );
+		}
+
+		bubble.querySelector( '.lcft-msg__meta' ).appendChild( dots );
+	}
+
+	/**
+	 * Removes the waiting animation once a message has been delivered.
+	 *
+	 * @param {HTMLElement} bubble The message bubble.
+	 */
+	function markDelivered( bubble ) {
+		var dots = bubble.querySelector( '.lcft-msg__dots' );
+
+		if ( dots ) {
+			dots.remove();
+		}
+
+		bubble.classList.remove( 'is-undelivered' );
+	}
+
+	/**
 	 * Appends a message to the log.
 	 *
 	 * @param {Object} message The message payload.
@@ -327,13 +369,12 @@
 			meta.textContent += ' · ' + config.i18n.edited;
 		}
 
-		if ( message.delivered === false ) {
-			bubble.classList.add( 'is-undelivered' );
-			meta.textContent += ' · ' + config.i18n.undelivered;
-		}
-
 		bubble.appendChild( meta );
 		el.log.appendChild( bubble );
+
+		if ( message.delivered === false ) {
+			markWaiting( bubble );
+		}
 
 		return bubble;
 	}
@@ -351,11 +392,29 @@
 		var incoming = 0;
 
 		messages.forEach( function ( message ) {
-			renderMessage( message );
-
 			if ( message.id > state.cursor ) {
 				state.cursor = message.id;
 			}
+
+			// Already drawn, by the send or by an earlier poll: only its delivery can have moved.
+			var existing = message.id ? el.log.querySelector( '.lcft-msg[data-id="' + message.id + '"]' ) : null;
+
+			if ( existing ) {
+				if ( message.delivered !== false ) {
+					markDelivered( existing );
+				}
+
+				return;
+			}
+
+			// A first message takes a few seconds to send (the topic is created first), and a poll
+			// in the meantime finds it stored but not yet sent. The send draws it when it returns;
+			// drawing it here too showed the member a second copy.
+			if ( state.sending && message.direction === 'in' ) {
+				return;
+			}
+
+			renderMessage( message );
 
 			if ( message.direction === 'out' ) {
 				incoming++;
@@ -479,6 +538,16 @@
 			.then( function ( data ) {
 				appendMessages( data.messages );
 				setNotice( data.open ? '' : el.notice.dataset.closed || '' );
+
+				if ( data.undelivered ) {
+					el.log.querySelectorAll( '.lcft-msg.is-undelivered' ).forEach( function ( bubble ) {
+						var id = parseInt( bubble.dataset.id, 10 );
+
+						if ( id && data.undelivered.indexOf( id ) === -1 ) {
+							markDelivered( bubble );
+						}
+					} );
+				}
 			} )
 			.catch( handleError )
 			.then( scheduleNext );
@@ -550,23 +619,25 @@
 			delivered: true
 		} );
 		placeholder.classList.add( 'is-pending' );
+		markWaiting( placeholder );
 		scrollToEnd();
 
 		api( '/message', { method: 'POST', body: body } )
 			.then( function ( data ) {
 				placeholder.remove();
 
+				// A message that did not reach Telegram is stored all the same and sent again by
+				// the site, so it simply keeps its waiting animation until a poll sees it through.
 				if ( data.message ) {
 					appendMessages( [ data.message ] );
 				}
-
-				if ( ! data.delivered ) {
-					setNotice( data.error || config.i18n.failed );
-				}
 			} )
 			.catch( function ( error ) {
+				// The request itself failed, so the message may not even be stored: this one is
+				// worth telling the member about.
+				markDelivered( placeholder );
 				placeholder.classList.remove( 'is-pending' );
-				placeholder.classList.add( 'is-undelivered' );
+				placeholder.classList.add( 'is-failed' );
 				handleError( error );
 
 				if ( ! error || error.message !== 'expired' ) {

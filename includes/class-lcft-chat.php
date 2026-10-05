@@ -21,6 +21,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 class LCFT_Chat {
 
 	/**
+	 * How old, in seconds, an undelivered message must be before it is sent again.
+	 *
+	 * Longer than the slowest first send (a file upload is allowed two minutes), so a message
+	 * whose send is merely still running is never picked up and sent twice.
+	 *
+	 * @since 1.1.4
+	 *
+	 * @var int
+	 */
+	const REDELIVER_AFTER = 180;
+
+	/**
 	 * Sends a member's message to their Telegram topic.
 	 *
 	 * The message is stored before it is sent. If Telegram is unreachable the member still sees
@@ -48,6 +60,10 @@ class LCFT_Chat {
 		if ( ! $conversation ) {
 			return new WP_Error( 'no_conversation', esc_html__( 'The conversation could not be opened.', 'live-chat-for-telegram' ) );
 		}
+
+		// Earlier messages that failed go first, so the operator reads them in order. Done before
+		// the new message is stored, or it would be picked up and sent twice.
+		self::redeliver( $conversation, 0 );
 
 		$attachment = null;
 
@@ -253,6 +269,96 @@ class LCFT_Chat {
 		}
 
 		return false;
+	}
+
+
+	// # REDELIVERY ----------------------------------------------------------------------------------------------------
+
+	/**
+	 * Sends again the member messages of a conversation that never reached Telegram.
+	 *
+	 * Stops at the first failure: Telegram is evidently still unreachable, and sending a later
+	 * message before an earlier one would scramble the conversation for the operator.
+	 *
+	 * @since 1.1.4
+	 *
+	 * @param object $conversation The conversation row.
+	 * @param int    $min_age      Only messages at least this many seconds old.
+	 *
+	 * @return int The number of messages delivered.
+	 */
+	public static function redeliver( $conversation, $min_age = self::REDELIVER_AFTER ) {
+
+		$pending = LCFT_Conversations::get_undelivered( (int) $conversation->id, 10, $min_age );
+
+		if ( ! $pending ) {
+			return 0;
+		}
+
+		// The widget polls every few seconds and the schedule runs alongside it: one attempt at
+		// a time per conversation, or the same message could be sent by both.
+		$lock = 'lcft_redeliver_' . (int) $conversation->id;
+
+		if ( get_transient( $lock ) ) {
+			return 0;
+		}
+
+		set_transient( $lock, 1, MINUTE_IN_SECONDS );
+
+		$delivered = 0;
+
+		foreach ( $pending as $message ) {
+
+			$attachment = ! empty( $message->attachment_id ) ? LCFT_Attachments::get( (int) $message->attachment_id ) : null;
+
+			// Nothing left to send: the file was purged and there was no text with it.
+			if ( ! $attachment && '' === trim( (string) $message->body ) ) {
+				continue;
+			}
+
+			$sent = self::deliver( $conversation, (string) $message->body, $attachment );
+
+			if ( is_wp_error( $sent ) ) {
+				break;
+			}
+
+			LCFT_Conversations::update_message( (int) $message->id, array( 'tg_message_id' => (int) $sent ) );
+
+			++$delivered;
+		}
+
+		delete_transient( $lock );
+
+		return $delivered;
+	}
+
+	/**
+	 * Sends again whatever is still undelivered, for every member.
+	 *
+	 * Runs on a schedule, so a message is delivered even after the member has left the page.
+	 *
+	 * @since 1.1.4
+	 */
+	public static function redeliver_all() {
+
+		if ( ! LCFT_Settings::is_configured() ) {
+			return;
+		}
+
+		$conversation_ids = array();
+
+		foreach ( LCFT_Conversations::get_undelivered( 0, 50, self::REDELIVER_AFTER ) as $message ) {
+			$conversation_ids[ (int) $message->conversation_id ] = true;
+		}
+
+		foreach ( array_keys( $conversation_ids ) as $conversation_id ) {
+
+			$conversation = LCFT_Conversations::get( $conversation_id );
+
+			if ( $conversation ) {
+				self::redeliver( $conversation );
+			}
+		}
 	}
 
 

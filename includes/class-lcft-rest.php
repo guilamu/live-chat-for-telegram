@@ -187,12 +187,20 @@ class LCFT_REST {
 			return new WP_REST_Response( array( 'messages' => array() ), 200 );
 		}
 
-		$messages = LCFT_Conversations::get_messages( (int) $conversation->id, (int) $request['since'] );
+		// While the member has the chat open, their failed messages are retried here rather than
+		// waiting for the schedule.
+		LCFT_Chat::redeliver( $conversation );
+
+		$messages    = LCFT_Conversations::get_messages( (int) $conversation->id, (int) $request['since'] );
+		$undelivered = LCFT_Conversations::get_undelivered( (int) $conversation->id, 50 );
 
 		return new WP_REST_Response(
 			array(
-				'messages' => array_map( array( __CLASS__, 'prepare_message' ), $messages ),
-				'open'     => LCFT_Schedule::is_open(),
+				'messages'    => array_map( array( __CLASS__, 'prepare_message' ), $messages ),
+				'open'        => LCFT_Schedule::is_open(),
+
+				// Lets the widget stop the waiting animation on messages delivered since.
+				'undelivered' => array_map( 'intval', wp_list_pluck( $undelivered, 'id' ) ),
 			),
 			200
 		);

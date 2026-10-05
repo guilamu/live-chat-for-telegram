@@ -3,7 +3,7 @@
  * Plugin Name: Live Chat for Telegram
  * Plugin URI: https://github.com/guilamu/live-chat-for-telegram
  * Description: A live chat bubble for logged in users, answered from a Telegram group. Each member gets their own forum topic, so replies come from any phone without a dedicated app.
- * Version: 1.1.3
+ * Version: 1.1.4
  * Author: Guilamu
  * Author URI: https://github.com/guilamu
  * Update URI: https://github.com/guilamu/live-chat-for-telegram/
@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'LCFT_VERSION', '1.1.3' );
+define( 'LCFT_VERSION', '1.1.4' );
 define( 'LCFT_PLUGIN_FILE', __FILE__ );
 define( 'LCFT_PATH', plugin_dir_path( __FILE__ ) );
 define( 'LCFT_URL', plugin_dir_url( __FILE__ ) );
@@ -89,7 +89,10 @@ add_action( 'rest_api_init', array( 'LCFT_REST', 'register_routes' ) );
 // routes without touching their code.
 add_filter( 'rest_authentication_errors', array( 'LCFT_Webhook', 'allow_own_routes_through_rest_lockdown' ), 20 );
 add_action( 'lcft_purge_expired', array( 'LCFT_Conversations', 'purge' ) );
+add_action( 'lcft_redeliver', array( 'LCFT_Chat', 'redeliver_all' ) );
+add_filter( 'cron_schedules', 'lcft_cron_schedules' );
 add_action( 'init', 'lcft_schedule_purge' );
+add_action( 'init', 'lcft_schedule_redelivery' );
 add_action( 'init', 'lcft_load_textdomain' );
 add_filter( 'plugin_row_meta', 'lcft_plugin_row_meta', 10, 2 );
 
@@ -166,6 +169,40 @@ function lcft_schedule_purge() {
 }
 
 /**
+ * Adds the five minute interval used to retry undelivered messages.
+ *
+ * @since 1.1.4
+ *
+ * @param array $schedules The registered intervals.
+ *
+ * @return array
+ */
+function lcft_cron_schedules( $schedules ) {
+
+	$schedules['lcft_five_minutes'] = array(
+		'interval' => 5 * MINUTE_IN_SECONDS,
+		'display'  => __( 'Every five minutes', 'live-chat-for-telegram' ),
+	);
+
+	return $schedules;
+}
+
+/**
+ * Keeps the redelivery of failed member messages scheduled.
+ *
+ * The widget retries while it is open, but a member who sends a message during an outage and
+ * leaves would otherwise wait for their next visit.
+ *
+ * @since 1.1.4
+ */
+function lcft_schedule_redelivery() {
+
+	if ( ! wp_next_scheduled( 'lcft_redeliver' ) ) {
+		wp_schedule_event( time() + 5 * MINUTE_IN_SECONDS, 'lcft_five_minutes', 'lcft_redeliver' );
+	}
+}
+
+/**
  * Clears anything scheduled by the plugin.
  *
  * The webhook registration is deliberately left alone: deactivating to debug a problem should not
@@ -175,6 +212,7 @@ function lcft_schedule_purge() {
  */
 function lcft_deactivate() {
 	wp_clear_scheduled_hook( 'lcft_purge_expired' );
+	wp_clear_scheduled_hook( 'lcft_redeliver' );
 }
 
 /**

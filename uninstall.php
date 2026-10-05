@@ -25,6 +25,7 @@ delete_metadata( 'user', 0, '_lcft_entry_id', '', true );
 
 // Scheduled work.
 wp_clear_scheduled_hook( 'lcft_purge_expired' );
+wp_clear_scheduled_hook( 'lcft_redeliver' );
 
 // Attachments. The directory is removed with its contents, so the year and month subdirectories
 // have to go first.

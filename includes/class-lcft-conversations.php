@@ -437,6 +437,43 @@ class LCFT_Conversations {
 	}
 
 	/**
+	 * Returns the member messages that never reached Telegram, oldest first.
+	 *
+	 * A member message is stored before it is sent, so a row without a Telegram ID is one whose
+	 * send failed. The age filter keeps a redelivery from picking up a message whose first send is
+	 * still in flight: that one is not lost, only slow, and sending it twice would duplicate it.
+	 *
+	 * @since 1.1.4
+	 *
+	 * @param int $conversation_id The conversation, or zero for every conversation.
+	 * @param int $limit           The maximum number of messages.
+	 * @param int $min_age         Only messages at least this many seconds old.
+	 *
+	 * @return array
+	 */
+	public static function get_undelivered( $conversation_id = 0, $limit = 20, $min_age = 0 ) {
+
+		global $wpdb;
+
+		$table = LCFT_DB::messages_table();
+		$where = $wpdb->prepare( 'direction = %s AND ( tg_message_id IS NULL OR tg_message_id = 0 )', self::IN );
+
+		if ( $conversation_id ) {
+			$where .= $wpdb->prepare( ' AND conversation_id = %d', (int) $conversation_id );
+		}
+
+		// created_at is stored in the site's time zone, so the cutoff is too.
+		if ( $min_age > 0 ) {
+			$where .= $wpdb->prepare( ' AND created_at <= %s', wp_date( 'Y-m-d H:i:s', time() - (int) $min_age ) );
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
+		$rows = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE {$where} ORDER BY id ASC LIMIT %d", (int) $limit ) );
+
+		return $rows ? $rows : array();
+	}
+
+	/**
 	 * Counts the operator messages the member has not seen yet.
 	 *
 	 * The widget cannot work this out for itself: on a fresh page load every reply is new to it,

@@ -226,6 +226,11 @@ Set a retention period under **Advanced** to delete old messages and their files
 
 ## Changelog
 
+### 1.1.4 - 2026-10-05
+- **Fixed:** A member message that failed to reach Telegram is now really sent again, in order: with the member's next message, while the chat is open, and every five minutes in the background
+- **Fixed:** A member's first message no longer appears twice (once as "not delivered") while its topic is being created
+- **Improved:** Instead of a "not delivered" warning, a message on its way shows three animated dots until it reaches Telegram
+
 ### 1.1.3 - 2026-10-05
 - **Improved:** The three dots of the chat button bounce briefly every 30 seconds, like someone typing (disabled when the visitor prefers reduced motion)
 

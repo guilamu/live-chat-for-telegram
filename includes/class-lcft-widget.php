@@ -152,7 +152,6 @@ class LCFT_Widget {
 					'open'         => __( 'Open the chat', 'live-chat-for-telegram' ),
 					'you'          => __( 'You', 'live-chat-for-telegram' ),
 					'sending'      => __( 'Sending…', 'live-chat-for-telegram' ),
-					'undelivered'  => __( 'Not delivered. It is saved and will be picked up.', 'live-chat-for-telegram' ),
 					'edited'       => __( 'edited', 'live-chat-for-telegram' ),
 					'tooLarge'     => __( 'That file is too large.', 'live-chat-for-telegram' ),
 					'download'     => __( 'Download', 'live-chat-for-telegram' ),

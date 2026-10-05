@@ -275,8 +275,47 @@
 	opacity: 0.6;
 }
 
-.lcft-msg.is-undelivered {
+.lcft-msg.is-failed {
 	outline: 1px solid #d63638;
+}
+
+/* Three dots after the time while a message is on its way to Telegram. */
+.lcft-msg__dots {
+	display: inline-flex;
+	gap: 3px;
+	margin-left: 6px;
+	vertical-align: middle;
+}
+
+.lcft-msg__dots span {
+	width: 4px;
+	height: 4px;
+	border-radius: 999px;
+	background: currentColor;
+	animation: lcft-waiting 1.2s ease-in-out infinite;
+}
+
+.lcft-msg__dots span:nth-child( 2 ) {
+	animation-delay: 0.15s;
+}
+
+.lcft-msg__dots span:nth-child( 3 ) {
+	animation-delay: 0.3s;
+}
+
+@keyframes lcft-waiting {
+
+	0%,
+	60%,
+	100% {
+		transform: translateY( 0 );
+		opacity: 0.5;
+	}
+
+	30% {
+		transform: translateY( -3px );
+		opacity: 1;
+	}
 }
 
 .lcft-msg__body {
@@ -532,7 +571,8 @@
 		transition: none;
 	}
 
-	.lcft__dot {
+	.lcft__dot,
+	.lcft-msg__dots span {
 		animation: none;
 	}
 }
