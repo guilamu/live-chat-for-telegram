@@ -185,7 +185,7 @@ class LCFT_Widget {
 		}
 
 		?>
-		<div class="lcft <?php echo esc_attr( $position ); ?>" data-lcft hidden>
+		<div class="lcft <?php echo esc_attr( $position ); ?>" data-lcft hidden style="<?php echo esc_attr( self::initials_style() ); ?>">
 			<div class="lcft__panel" role="dialog" aria-live="polite"
 				aria-label="<?php echo esc_attr( LCFT_Settings::get( 'agent_name' ) ); ?>" data-lcft-panel hidden>
 
@@ -285,6 +285,49 @@ class LCFT_Widget {
 		global $wp;
 
 		return home_url( add_query_arg( array(), $wp->request ) );
+	}
+
+	/**
+	 * Returns the custom properties holding the member's and the support's initials.
+	 *
+	 * The widget draws no avatars itself, but a site may want a letter in a circle beside each
+	 * message. CSS alone cannot know whose page it is on, so the letters are handed over as
+	 * properties for a stylesheet to use, e.g. content: var( --lcft-member-initial ).
+	 *
+	 * The member's comes from their account rather than the Gravity Forms entry, which would cost
+	 * a lookup on every page they visit.
+	 *
+	 * @since 1.1.6
+	 *
+	 * @return string
+	 */
+	protected static function initials_style() {
+
+		$user   = wp_get_current_user();
+		$member = self::initial( '' !== trim( $user->first_name ) ? $user->first_name : $user->display_name );
+		$agent  = self::initial( (string) LCFT_Settings::get( 'agent_name', '' ) );
+
+		return sprintf( '--lcft-member-initial:"%s";--lcft-agent-initial:"%s";', $member, $agent );
+	}
+
+	/**
+	 * Returns the first letter or digit of a name, uppercased, or an empty string.
+	 *
+	 * Anything else is dropped, which also keeps the value safe inside a CSS string.
+	 *
+	 * @since 1.1.6
+	 *
+	 * @param string $name The name.
+	 *
+	 * @return string
+	 */
+	protected static function initial( $name ) {
+
+		if ( ! preg_match( '/[\p{L}\p{N}]/u', (string) $name, $match ) ) {
+			return '';
+		}
+
+		return function_exists( 'mb_strtoupper' ) ? mb_strtoupper( $match[0], 'UTF-8' ) : strtoupper( $match[0] );
 	}
 
 	/**

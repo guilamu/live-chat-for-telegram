@@ -382,9 +382,10 @@
 	/**
 	 * Draws a batch of messages and moves the cursor forward.
 	 *
-	 * @param {Array} messages The payloads, oldest first.
+	 * @param {Array}   messages The payloads, oldest first.
+	 * @param {boolean} fromSend Whether this is the reply to the member's own send.
 	 */
-	function appendMessages( messages ) {
+	function appendMessages( messages, fromSend ) {
 		if ( ! messages || ! messages.length ) {
 			return;
 		}
@@ -410,7 +411,7 @@
 			// A first message takes a few seconds to send (the topic is created first), and a poll
 			// in the meantime finds it stored but not yet sent. The send draws it when it returns;
 			// drawing it here too showed the member a second copy.
-			if ( state.sending && message.direction === 'in' ) {
+			if ( state.sending && ! fromSend && message.direction === 'in' ) {
 				return;
 			}
 
@@ -629,7 +630,7 @@
 				// A message that did not reach Telegram is stored all the same and sent again by
 				// the site, so it simply keeps its waiting animation until a poll sees it through.
 				if ( data.message ) {
-					appendMessages( [ data.message ] );
+					appendMessages( [ data.message ], true );
 				}
 			} )
 			.catch( function ( error ) {

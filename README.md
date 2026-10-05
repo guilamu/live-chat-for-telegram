@@ -120,7 +120,7 @@ These are Telegram's, not the plugin's:
 
 The widget follows the theme on its own: with **Use the theme's main colour** ticked (the default), the accent is the Divi 5 primary colour or a block theme's `primary` preset, and the text uses the Divi 5 global fonts when they exist.
 
-For anything finer, set these custom properties on `.lcft` in **Widget › Custom CSS** (or the theme's custom CSS): `--lcft-accent`, `--lcft-accent-hover`, `--lcft-surface`, `--lcft-text`, `--lcft-muted`, `--lcft-border`, `--lcft-them` (operator bubbles), `--lcft-radius`, `--lcft-control-radius`, `--lcft-shadow`, `--lcft-font`, `--lcft-heading-font`. Divi 5 variables can be used directly:
+For anything finer, set these custom properties on `.lcft` in **Widget › Custom CSS** (or the theme's custom CSS): `--lcft-accent`, `--lcft-accent-hover`, `--lcft-surface`, `--lcft-text`, `--lcft-muted`, `--lcft-border`, `--lcft-them` (operator bubbles), `--lcft-radius`, `--lcft-control-radius`, `--lcft-shadow`, `--lcft-font`, `--lcft-heading-font`. Two more are set for you: `--lcft-member-initial` and `--lcft-agent-initial`, the first letter of the member's first name and of the support name, ready for `content: var( --lcft-member-initial )`. Divi 5 variables can be used directly:
 
 ```css
 body .lcft {
@@ -226,8 +226,12 @@ Set a retention period under **Advanced** to delete old messages and their files
 
 ## Changelog
 
+### 1.1.6 - 2026-10-05
+- **New:** `--lcft-member-initial` and `--lcft-agent-initial` custom properties on the chat, holding the first letter of the member's first name and of the support name, for sites that draw a letter avatar beside each message
+
 ### 1.1.5 - 2026-10-05
 - **New:** Paste a screenshot straight into the message box (Ctrl+V / Cmd+V), or drop a file on the chat panel
+- **Fixed:** A message sent from the chat no longer vanishes from the conversation until the page is reloaded (regression in 1.1.4)
 - **Fixed:** The send button no longer touches the panel's edge in Firefox and Safari, where the message box would not shrink to make room
 - **Improved:** The emoji, attach and send buttons use clean SVG icons matching the chat button, instead of emoji
 - **Improved:** The file about to be sent is shown above the message box, with a thumbnail for images and a button to remove it

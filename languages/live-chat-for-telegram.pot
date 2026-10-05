@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Live Chat for Telegram 1.1.5\n"
+"Project-Id-Version: Live Chat for Telegram 1.1.6\n"
 "Report-Msgid-Bugs-To: https://github.com/guilamu/live-chat-for-telegram/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
