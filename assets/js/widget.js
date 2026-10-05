@@ -748,6 +748,80 @@
 		}
 
 		el.root.classList.remove( 'has-file' );
+
+		if ( el.stagedThumb.src ) {
+			URL.revokeObjectURL( el.stagedThumb.src );
+			el.stagedThumb.removeAttribute( 'src' );
+		}
+
+		el.stagedThumb.hidden = true;
+		el.staged.hidden = true;
+	}
+
+	/**
+	 * Stages a file for the next send, whether picked, pasted or dropped.
+	 *
+	 * @param {File} file The file.
+	 */
+	function stageFile( file ) {
+		if ( file.size > config.maxUpload ) {
+			setNotice( config.i18n.tooLarge );
+			clearPendingFile();
+
+			return;
+		}
+
+		clearPendingFile();
+
+		state.pendingFile = file;
+		el.root.classList.add( 'has-file' );
+
+		el.stagedName.textContent = file.name;
+
+		if ( /^image\//.test( file.type ) ) {
+			el.stagedThumb.src = URL.createObjectURL( file );
+			el.stagedThumb.hidden = false;
+		}
+
+		el.staged.hidden = false;
+		el.input.focus();
+	}
+
+	/**
+	 * Returns the first image on the clipboard, named like a screenshot.
+	 *
+	 * A pasted image arrives as "image.png" whatever it is. A dated name tells the operator what
+	 * they are looking at, and keeps two captures in the same topic apart.
+	 *
+	 * @param {ClipboardEvent} event The paste event.
+	 * @return {File|null} The image, or null when the clipboard holds none.
+	 */
+	function pastedImage( event ) {
+		var items = event.clipboardData ? event.clipboardData.items : [];
+
+		for ( var i = 0; i < items.length; i++ ) {
+			if ( items[ i ].kind !== 'file' || ! /^image\//.test( items[ i ].type ) ) {
+				continue;
+			}
+
+			var blob = items[ i ].getAsFile();
+
+			if ( ! blob ) {
+				continue;
+			}
+
+			var now = new Date();
+			var pad = function ( n ) {
+				return ( n < 10 ? '0' : '' ) + n;
+			};
+			var stamp = now.getFullYear() + '-' + pad( now.getMonth() + 1 ) + '-' + pad( now.getDate() ) +
+				'_' + pad( now.getHours() ) + '-' + pad( now.getMinutes() ) + '-' + pad( now.getSeconds() );
+			var extension = blob.type.split( '/' )[ 1 ].replace( 'jpeg', 'jpg' );
+
+			return new File( [ blob ], config.i18n.screenshot + '_' + stamp + '.' + extension, { type: blob.type } );
+		}
+
+		return null;
 	}
 
 	// # OPENING ------------------------------------------------------------------------------------
@@ -824,6 +898,9 @@
 		el.log = el.root.querySelector( '[data-lcft-log]' );
 		el.notice = el.root.querySelector( '[data-lcft-notice]' );
 		el.form = el.root.querySelector( '[data-lcft-form]' );
+		el.staged = el.root.querySelector( '[data-lcft-staged]' );
+		el.stagedThumb = el.root.querySelector( '[data-lcft-staged-thumb]' );
+		el.stagedName = el.root.querySelector( '[data-lcft-staged-name]' );
 		el.input = el.root.querySelector( '[data-lcft-input]' );
 		el.file = el.root.querySelector( '[data-lcft-file]' );
 		el.badge = el.root.querySelector( '[data-lcft-badge]' );
@@ -858,23 +935,52 @@
 
 		initEmojiPicker();
 
+		el.root.querySelector( '[data-lcft-staged-remove]' ).addEventListener( 'click', function () {
+			clearPendingFile();
+			el.input.focus();
+		} );
+
 		if ( el.file ) {
 			el.file.addEventListener( 'change', function () {
 				var file = el.file.files[ 0 ];
 
-				if ( ! file ) {
-					return;
+				if ( file ) {
+					stageFile( file );
 				}
+			} );
 
-				if ( file.size > config.maxUpload ) {
-					setNotice( config.i18n.tooLarge );
-					clearPendingFile();
+			// A screenshot is usually on the clipboard, not in a file: pasting it saves a trip
+			// through the save dialog. Text on the clipboard is left to paste as usual.
+			el.input.addEventListener( 'paste', function ( event ) {
+				var image = pastedImage( event );
 
-					return;
+				if ( image ) {
+					event.preventDefault();
+					stageFile( image );
 				}
+			} );
 
-				state.pendingFile = file;
-				el.root.classList.add( 'has-file' );
+			// Dropping a file anywhere on the panel stages it too.
+			el.panel.addEventListener( 'dragover', function ( event ) {
+				if ( event.dataTransfer && Array.prototype.indexOf.call( event.dataTransfer.types, 'Files' ) !== -1 ) {
+					event.preventDefault();
+					el.panel.classList.add( 'is-dropping' );
+				}
+			} );
+
+			el.panel.addEventListener( 'dragleave', function ( event ) {
+				if ( ! el.panel.contains( event.relatedTarget ) ) {
+					el.panel.classList.remove( 'is-dropping' );
+				}
+			} );
+
+			el.panel.addEventListener( 'drop', function ( event ) {
+				el.panel.classList.remove( 'is-dropping' );
+
+				if ( event.dataTransfer && event.dataTransfer.files.length ) {
+					event.preventDefault();
+					stageFile( event.dataTransfer.files[ 0 ] );
+				}
 			} );
 		}
 

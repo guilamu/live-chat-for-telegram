@@ -408,6 +408,62 @@
 	opacity: 0.75;
 }
 
+/* # Staged file ------------------------------------------------------------------------------- */
+
+.lcft__staged {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 8px 10px;
+	border-top: 1px solid var( --lcft-border );
+	background: var( --lcft-surface );
+	font-size: 13px;
+	flex: 0 0 auto;
+}
+
+/* Same reason as the panel: the display above would otherwise beat the hidden attribute. */
+.lcft__staged[hidden],
+.lcft__staged-thumb[hidden] {
+	display: none;
+}
+
+.lcft__staged-thumb {
+	width: 48px;
+	height: 48px;
+	object-fit: cover;
+	border-radius: var( --lcft-control-radius );
+	border: 1px solid var( --lcft-border );
+}
+
+.lcft__staged-name {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: var( --lcft-muted );
+}
+
+.lcft__staged-remove {
+	flex: 0 0 auto;
+	border: 0;
+	background: none;
+	color: var( --lcft-muted );
+	font-size: 22px;
+	line-height: 1;
+	cursor: pointer;
+	padding: 0 4px;
+}
+
+.lcft__staged-remove:hover {
+	color: var( --lcft-text );
+}
+
+.lcft__panel.is-dropping {
+	outline: 2px dashed var( --lcft-accent );
+	outline-offset: -6px;
+}
+
 /* # Composer ---------------------------------------------------------------------------------- */
 
 .lcft__composer {
@@ -420,8 +476,11 @@
 	flex: 0 0 auto;
 }
 
+/* A textarea will not shrink below its default 20 columns unless told to. Firefox and Safari make
+   those columns wider than Chrome does, which pushed the send button against the panel's edge. */
 .lcft__input {
-	flex: 1 1 auto;
+	flex: 1 1 0;
+	min-width: 0;
 	resize: none;
 	border: 1px solid var( --lcft-border );
 	border-radius: var( --lcft-control-radius );
@@ -458,6 +517,17 @@
 .lcft__send {
 	background: var( --lcft-accent );
 	color: #fff;
+}
+
+.lcft__tool-icon {
+	display: block;
+	width: 20px;
+	height: 20px;
+}
+
+.lcft__attach:hover,
+.lcft__emoji:hover {
+	color: var( --lcft-text );
 }
 
 .lcft__send:hover,

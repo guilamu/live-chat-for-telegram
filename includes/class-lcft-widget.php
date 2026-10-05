@@ -154,6 +154,8 @@ class LCFT_Widget {
 					'sending'      => __( 'Sending…', 'live-chat-for-telegram' ),
 					'edited'       => __( 'edited', 'live-chat-for-telegram' ),
 					'tooLarge'     => __( 'That file is too large.', 'live-chat-for-telegram' ),
+					/* translators: Base name given to a pasted screenshot, followed by the date and time. */
+					'screenshot'   => __( 'screenshot', 'live-chat-for-telegram' ),
 					'download'     => __( 'Download', 'live-chat-for-telegram' ),
 					'audioFallback' => __( 'Your browser cannot play this recording.', 'live-chat-for-telegram' ),
 					'expired'      => __( 'Your session has expired. Reload the page to carry on.', 'live-chat-for-telegram' ),
@@ -200,6 +202,13 @@ class LCFT_Widget {
 				<div class="lcft__notice" data-lcft-notice hidden></div>
 				<div class="lcft__log" data-lcft-log tabindex="0"></div>
 
+				<div class="lcft__staged" data-lcft-staged hidden>
+					<img class="lcft__staged-thumb" data-lcft-staged-thumb alt="" hidden />
+					<span class="lcft__staged-name" data-lcft-staged-name></span>
+					<button type="button" class="lcft__staged-remove" data-lcft-staged-remove
+						aria-label="<?php esc_attr_e( 'Remove the file', 'live-chat-for-telegram' ); ?>">&times;</button>
+				</div>
+
 				<form class="lcft__composer" data-lcft-form>
 					<label class="screen-reader-text" for="lcft-input"><?php esc_html_e( 'Your message', 'live-chat-for-telegram' ); ?></label>
 					<textarea id="lcft-input" class="lcft__input" rows="1" data-lcft-input
@@ -210,7 +219,7 @@ class LCFT_Widget {
 							<button type="button" class="lcft__emoji" data-lcft-emoji-toggle
 								aria-haspopup="true" aria-expanded="false"
 								title="<?php esc_attr_e( 'Insert an emoji', 'live-chat-for-telegram' ); ?>">
-								<span aria-hidden="true">🙂</span>
+								<span aria-hidden="true"><?php echo self::composer_icon( 'emoji' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static markup. ?></span>
 								<span class="screen-reader-text"><?php esc_html_e( 'Insert an emoji', 'live-chat-for-telegram' ); ?></span>
 							</button>
 							<div class="lcft__emoji-panel" data-lcft-emoji-panel hidden>
@@ -224,13 +233,13 @@ class LCFT_Widget {
 					<?php if ( LCFT_Settings::get( 'attachments_enabled', true ) ) : ?>
 						<label class="lcft__attach" title="<?php esc_attr_e( 'Attach a file', 'live-chat-for-telegram' ); ?>">
 							<input type="file" data-lcft-file hidden />
-							<span aria-hidden="true">📎</span>
+							<span aria-hidden="true"><?php echo self::composer_icon( 'attach' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static markup. ?></span>
 							<span class="screen-reader-text"><?php esc_html_e( 'Attach a file', 'live-chat-for-telegram' ); ?></span>
 						</label>
 					<?php endif; ?>
 
 					<button type="submit" class="lcft__send">
-						<span aria-hidden="true">➤</span>
+						<span aria-hidden="true"><?php echo self::composer_icon( 'send' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static markup. ?></span>
 						<span class="screen-reader-text"><?php esc_html_e( 'Send', 'live-chat-for-telegram' ); ?></span>
 					</button>
 				</form>
@@ -296,6 +305,39 @@ class LCFT_Widget {
 			. '<circle class="lcft__dot" cx="8.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>'
 			. '<circle class="lcft__dot" cx="12.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>'
 			. '<circle class="lcft__dot" cx="16.5" cy="11.5" r="1" fill="currentColor" stroke="none"/>'
+			. '</svg>';
+	}
+
+	/**
+	 * Returns one of the composer's button icons.
+	 *
+	 * Inline SVG for the same reason as the chat button: emoji are drawn by the visitor's system
+	 * and never match the theme. All three share one stroke style and take the button's colour.
+	 *
+	 * @since 1.1.5
+	 *
+	 * @param string $name emoji, attach or send.
+	 *
+	 * @return string
+	 */
+	protected static function composer_icon( $name ) {
+
+		$shapes = array(
+			'emoji'  => '<circle cx="12" cy="12" r="9"/>'
+				. '<path d="M8.5 14.5a4.5 4.5 0 0 0 7 0"/>'
+				. '<circle cx="9" cy="9.75" r="1" fill="currentColor" stroke="none"/>'
+				. '<circle cx="15" cy="9.75" r="1" fill="currentColor" stroke="none"/>',
+			'attach' => '<path d="M20.5 11.5l-8.2 8.2a5 5 0 0 1-7.1-7.1l8.5-8.5a3.3 3.3 0 0 1 4.7 4.7l-8.5 8.5a1.7 1.7 0 0 1-2.4-2.4l7.8-7.8"/>',
+			'send'   => '<path d="M21 3L10.5 13.5"/>'
+				. '<path d="M21 3l-6.5 18-4-7.5L3 9.5z"/>',
+		);
+
+		if ( ! isset( $shapes[ $name ] ) ) {
+			return '';
+		}
+
+		return '<svg class="lcft__tool-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">'
+			. $shapes[ $name ]
 			. '</svg>';
 	}
 

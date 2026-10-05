@@ -226,6 +226,12 @@ Set a retention period under **Advanced** to delete old messages and their files
 
 ## Changelog
 
+### 1.1.5 - 2026-10-05
+- **New:** Paste a screenshot straight into the message box (Ctrl+V / Cmd+V), or drop a file on the chat panel
+- **Fixed:** The send button no longer touches the panel's edge in Firefox and Safari, where the message box would not shrink to make room
+- **Improved:** The emoji, attach and send buttons use clean SVG icons matching the chat button, instead of emoji
+- **Improved:** The file about to be sent is shown above the message box, with a thumbnail for images and a button to remove it
+
 ### 1.1.4 - 2026-10-05
 - **Fixed:** A member message that failed to reach Telegram is now really sent again, in order: with the member's next message, while the chat is open, and every five minutes in the background
 - **Fixed:** A member's first message no longer appears twice (once as "not delivered") while its topic is being created
