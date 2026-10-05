@@ -2,7 +2,15 @@
  * The chat bubble.
  *
  * Scoped under .lcft and built on custom properties so a theme can restyle it without fighting
- * specificity. The accent colour is injected inline from the settings.
+ * specificity. The accent colour is injected inline from the settings, after this file.
+ *
+ * Fonts fall back to the Divi 5 global fonts when they exist. Neither --lcft-font nor the Divi
+ * variable being defined makes the declaration invalid at computed value time, which for an
+ * inherited property like font-family means inheriting — the same as font-family: inherit.
+ *
+ * Tokens a site can set on .lcft: --lcft-accent, --lcft-accent-hover, --lcft-surface, --lcft-text,
+ * --lcft-muted, --lcft-border, --lcft-them, --lcft-radius, --lcft-control-radius, --lcft-shadow,
+ * --lcft-font, --lcft-heading-font.
  *
  * @package Live_Chat_For_Telegram
  */
@@ -15,6 +23,8 @@
 	--lcft-border: #e0e0e0;
 	--lcft-them: #f1f3f6;
 	--lcft-radius: 14px;
+	--lcft-control-radius: 10px;
+	--lcft-shadow: 0 6px 20px rgba( 0, 0, 0, 0.22 );
 
 	position: fixed;
 	bottom: 20px;
@@ -22,7 +32,12 @@
 	font-size: 15px;
 	line-height: 1.45;
 	color: var( --lcft-text );
-	font-family: inherit;
+	font-family: var( --lcft-font, var( --et_global_body_font ) );
+}
+
+.lcft__title,
+.lcft__invite-label {
+	font-family: var( --lcft-heading-font, var( --et_global_heading_font ) );
 }
 
 .lcft--right {
@@ -59,14 +74,15 @@
 	background: var( --lcft-accent );
 	color: #fff;
 	cursor: pointer;
-	box-shadow: 0 6px 20px rgba( 0, 0, 0, 0.22 );
-	transition: transform 0.15s ease;
+	box-shadow: var( --lcft-shadow );
+	transition: transform 0.15s ease, background-color 0.15s ease;
 	text-decoration: none;
 }
 
 .lcft__bubble:hover,
 .lcft__bubble:focus-visible {
 	transform: scale( 1.05 );
+	background: var( --lcft-accent-hover, var( --lcft-accent ) );
 }
 
 .lcft__bubble-icon {
@@ -190,7 +206,7 @@
 
 .lcft-welcome {
 	padding: 10px 12px;
-	border-radius: 10px;
+	border-radius: var( --lcft-control-radius );
 	background: #fff;
 	border: 1px dashed var( --lcft-border );
 	color: var( --lcft-muted );
@@ -334,7 +350,7 @@
 	flex: 1 1 auto;
 	resize: none;
 	border: 1px solid var( --lcft-border );
-	border-radius: 10px;
+	border-radius: var( --lcft-control-radius );
 	padding: 9px 11px;
 	font: inherit;
 	line-height: 1.4;
@@ -358,7 +374,7 @@
 	width: 38px;
 	height: 38px;
 	border: 0;
-	border-radius: 10px;
+	border-radius: var( --lcft-control-radius );
 	cursor: pointer;
 	font-size: 17px;
 	background: transparent;
@@ -368,6 +384,11 @@
 .lcft__send {
 	background: var( --lcft-accent );
 	color: #fff;
+}
+
+.lcft__send:hover,
+.lcft__send:focus-visible {
+	background: var( --lcft-accent-hover, var( --lcft-accent ) );
 }
 
 .lcft.has-file .lcft__attach {
@@ -396,7 +417,7 @@
 	padding: 8px;
 	background: var( --lcft-surface );
 	border: 1px solid var( --lcft-border );
-	border-radius: 10px;
+	border-radius: var( --lcft-control-radius );
 	box-shadow: 0 8px 24px rgba( 0, 0, 0, 0.18 );
 }
 

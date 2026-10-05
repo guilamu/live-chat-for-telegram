@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Live Chat for Telegram 1.1.0\n"
+"Project-Id-Version: Live Chat for Telegram 1.1.1\n"
 "Report-Msgid-Bugs-To: https://github.com/guilamu/live-chat-for-telegram/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -219,6 +219,14 @@ msgstr ""
 
 #: includes/class-lcft-admin.php:300
 msgid "Accent colour"
+msgstr ""
+
+#: includes/class-lcft-admin.php
+msgid "Use the theme's main colour when it defines one (Divi 5, block themes)"
+msgstr ""
+
+#: includes/class-lcft-admin.php
+msgid "The colour picked here is used otherwise."
 msgstr ""
 
 #: includes/class-lcft-admin.php:303
@@ -738,4 +746,13 @@ msgstr ""
 #. translators: 1: The tags removed from the card template. 2: The tags Telegram supports.
 #: includes/class-lcft-admin.php
 msgid "Telegram does not support these HTML tags, so they were removed from the card template: %1$s. Use only: %2$s."
+msgstr ""
+
+#: includes/class-lcft-admin.php
+msgid "Custom CSS"
+msgstr ""
+
+#: includes/class-lcft-admin.php
+#. translators: %s: The list of CSS custom properties.
+msgid "Loaded after the widget stylesheet, wherever the bubble appears. Set these properties on .lcft to restyle it: %s."
 msgstr ""

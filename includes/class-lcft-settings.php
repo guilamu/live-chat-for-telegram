@@ -64,6 +64,8 @@ class LCFT_Settings {
 			'widget_enabled'       => true,
 			'widget_position'      => 'right',
 			'widget_accent'        => '#1c3f94',
+			'widget_theme_accent'  => true,
+			'custom_css'           => '',
 			'welcome_message'      => '',
 			'auto_open_delay'      => 0,
 			'logged_out_mode'      => 'hide',

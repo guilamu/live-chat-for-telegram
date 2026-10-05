@@ -311,7 +311,12 @@ class LCFT_Admin {
 			)
 		);
 
-		self::row( __( 'Accent colour', 'live-chat-for-telegram' ), self::color_field( 'widget_accent' ) );
+		self::row(
+			__( 'Accent colour', 'live-chat-for-telegram' ),
+			self::checkbox_field( 'widget_theme_accent', __( "Use the theme's main colour when it defines one (Divi 5, block themes)", 'live-chat-for-telegram' ) )
+				. '<br />' . self::color_field( 'widget_accent' ),
+			__( 'The colour picked here is used otherwise.', 'live-chat-for-telegram' )
+		);
 
 		self::row(
 			__( 'Open automatically', 'live-chat-for-telegram' ),
@@ -335,6 +340,16 @@ class LCFT_Admin {
 			__( 'Limit to roles', 'live-chat-for-telegram' ),
 			self::roles_field(),
 			__( 'Leave everything unticked to allow every signed in user.', 'live-chat-for-telegram' )
+		);
+
+		self::row(
+			__( 'Custom CSS', 'live-chat-for-telegram' ),
+			self::textarea_field( 'custom_css', 10 ),
+			sprintf(
+				/* translators: %s: The list of CSS custom properties. */
+				__( 'Loaded after the widget stylesheet, wherever the bubble appears. Set these properties on .lcft to restyle it: %s.', 'live-chat-for-telegram' ),
+				'--lcft-accent, --lcft-accent-hover, --lcft-surface, --lcft-text, --lcft-muted, --lcft-border, --lcft-them, --lcft-radius, --lcft-control-radius, --lcft-shadow, --lcft-font, --lcft-heading-font'
+			)
 		);
 
 		echo '</tbody></table>';
@@ -531,6 +546,10 @@ class LCFT_Admin {
 				$values['welcome_message']  = isset( $_POST['welcome_message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['welcome_message'] ) ) : '';
 				$values['widget_position']  = isset( $_POST['widget_position'] ) && 'left' === $_POST['widget_position'] ? 'left' : 'right';
 				$values['widget_accent']    = isset( $_POST['widget_accent'] ) ? sanitize_hex_color( wp_unslash( $_POST['widget_accent'] ) ) : '#1c3f94';
+				$values['widget_theme_accent'] = ! empty( $_POST['widget_theme_accent'] );
+
+				// Tags are stripped so the CSS can never close the <style> element it is printed in.
+				$values['custom_css'] = isset( $_POST['custom_css'] ) ? trim( wp_strip_all_tags( wp_unslash( $_POST['custom_css'] ) ) ) : '';
 				$values['auto_open_delay']  = isset( $_POST['auto_open_delay'] ) ? min( 300, absint( $_POST['auto_open_delay'] ) ) : 0;
 				$values['logged_out_mode']  = isset( $_POST['logged_out_mode'] ) && 'invite' === $_POST['logged_out_mode'] ? 'invite' : 'hide';
 

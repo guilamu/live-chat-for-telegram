@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Live Chat for Telegram 1.1.0\n"
+"Project-Id-Version: Live Chat for Telegram 1.1.1\n"
 "Report-Msgid-Bugs-To: https://github.com/guilamu/live-chat-for-telegram/"
 "issues\n"
 "POT-Creation-Date: 2026-08-04T00:00:00+00:00\n"
@@ -260,6 +260,14 @@ msgstr "En bas à gauche"
 #: includes/class-lcft-admin.php:300
 msgid "Accent colour"
 msgstr "Couleur d'accent"
+
+#: includes/class-lcft-admin.php
+msgid "Use the theme's main colour when it defines one (Divi 5, block themes)"
+msgstr "Utiliser la couleur principale du thème quand il en définit une (Divi 5, thèmes blocs)"
+
+#: includes/class-lcft-admin.php
+msgid "The colour picked here is used otherwise."
+msgstr "Sinon, la couleur choisie ici est utilisée."
 
 #: includes/class-lcft-admin.php:303
 msgid "Open automatically"
@@ -870,3 +878,12 @@ msgstr "Connectez-vous pour discuter avec nous"
 #: includes/class-lcft-admin.php
 msgid "Telegram does not support these HTML tags, so they were removed from the card template: %1$s. Use only: %2$s."
 msgstr "Telegram ne prend pas en charge ces balises HTML ; elles ont été retirées du modèle de fiche : %1$s. Utilisez uniquement : %2$s."
+
+#: includes/class-lcft-admin.php
+msgid "Custom CSS"
+msgstr "CSS personnalisé"
+
+#: includes/class-lcft-admin.php
+#. translators: %s: The list of CSS custom properties.
+msgid "Loaded after the widget stylesheet, wherever the bubble appears. Set these properties on .lcft to restyle it: %s."
+msgstr "Chargé après la feuille de style du widget, partout où la bulle apparaît. Définissez ces propriétés sur .lcft pour l'habiller : %s."

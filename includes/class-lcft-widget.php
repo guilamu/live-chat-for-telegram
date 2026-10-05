@@ -30,6 +30,26 @@ class LCFT_Widget {
 	public static function init() {
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue' ) );
 		add_action( 'wp_footer', array( __CLASS__, 'render' ) );
+		add_filter( 'body_class', array( __CLASS__, 'body_class' ) );
+	}
+
+	/**
+	 * Flags pages where the member can chat, so a theme can hide a contact button the bubble
+	 * replaces. Not added for the signed out invitation, which offers no chat by itself.
+	 *
+	 * @since 1.1.1
+	 *
+	 * @param string[] $classes The body classes.
+	 *
+	 * @return string[]
+	 */
+	public static function body_class( $classes ) {
+
+		if ( LCFT_Settings::user_can_chat() && self::should_display() ) {
+			$classes[] = 'lcft-chat-active';
+		}
+
+		return $classes;
 	}
 
 	/**
@@ -84,12 +104,26 @@ class LCFT_Widget {
 
 		wp_enqueue_style( 'lcft-widget', LCFT_URL . 'assets/css/widget.css', array(), LCFT_VERSION );
 
-		$accent = LCFT_Settings::get( 'widget_accent', '#1c3f94' );
+		$accent = sanitize_hex_color( (string) LCFT_Settings::get( 'widget_accent', '#1c3f94' ) );
+		$accent = $accent ? $accent : '#1c3f94';
 
-		wp_add_inline_style(
-			'lcft-widget',
-			':root{--lcft-accent:' . esc_attr( $accent ) . ';}'
-		);
+		// The theme's own main colour, when it publishes one: Divi 5 global colours first, then a
+		// block theme's "primary" preset. The picked colour is the last fallback.
+		if ( LCFT_Settings::get( 'widget_theme_accent', true ) ) {
+			$accent = 'var(--gcid-primary-color,var(--wp--preset--color--primary,' . $accent . '))';
+		}
+
+		// Declared on .lcft itself, not :root: the stylesheet's default lives on .lcft and would
+		// otherwise shadow anything inherited from above.
+		wp_add_inline_style( 'lcft-widget', '.lcft{--lcft-accent:' . $accent . ';}' );
+
+		// Printed after the accent, so the site's own rules win at equal specificity. Tags were
+		// stripped on save; stripping again covers a value written straight into the option.
+		$custom_css = trim( wp_strip_all_tags( (string) LCFT_Settings::get( 'custom_css', '' ) ) );
+
+		if ( '' !== $custom_css ) {
+			wp_add_inline_style( 'lcft-widget', $custom_css );
+		}
 
 		// A signed out visitor gets the stylesheet and the button, and no script at all: there is
 		// nothing for it to do but send them to the login page, which a link already does.

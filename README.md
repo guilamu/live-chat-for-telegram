@@ -116,6 +116,25 @@ These are Telegram's, not the plugin's:
 - **Files you send are capped at 20 MB.** `getFile` refuses anything larger, so a bigger reply cannot be mirrored back. You get a warning in the topic rather than silence. Members can upload up to 50 MB in the other direction.
 - **Voice notes are Ogg/Opus**, which some versions of Safari will not play. The widget falls back to a download link rather than a dead player.
 
+## Styling
+
+The widget follows the theme on its own: with **Use the theme's main colour** ticked (the default), the accent is the Divi 5 primary colour or a block theme's `primary` preset, and the text uses the Divi 5 global fonts when they exist.
+
+For anything finer, set these custom properties on `.lcft` in **Widget › Custom CSS** (or the theme's custom CSS): `--lcft-accent`, `--lcft-accent-hover`, `--lcft-surface`, `--lcft-text`, `--lcft-muted`, `--lcft-border`, `--lcft-them` (operator bubbles), `--lcft-radius`, `--lcft-control-radius`, `--lcft-shadow`, `--lcft-font`, `--lcft-heading-font`. Divi 5 variables can be used directly:
+
+```css
+body .lcft {
+	--lcft-accent: var(--gcid-primary-color);
+	--lcft-heading-font: var(--et_global_heading_font);
+}
+```
+
+The `<body>` gets the `lcft-chat-active` class wherever the member can chat, so a contact button the bubble replaces can be hidden only there:
+
+```css
+body.lcft-chat-active .my-contact-button { display: none !important; }
+```
+
 ## Configuration constants
 
 Keep secrets out of the database by defining them in `wp-config.php`:
@@ -206,6 +225,12 @@ Set a retention period under **Advanced** to delete old messages and their files
 ```
 
 ## Changelog
+
+### 1.1.1 - 2026-10-05
+- **Fixed:** The accent colour picked in the settings is now actually applied; the stylesheet's default used to override it
+- **New:** The widget follows the theme's main colour (Divi 5 global colours, block theme presets) and Divi 5 global fonts, and exposes more custom properties for styling
+- **New:** Custom CSS field in the widget settings, loaded after the widget stylesheet
+- **New:** `lcft-chat-active` body class wherever the member can chat
 
 ### 1.1.0 - 2026-10-05
 - **Fixed:** Message length is counted in UTF-16 code units, as Telegram counts it, so long messages full of emoji are split correctly instead of being rejected; the same applies to captions and topic names
