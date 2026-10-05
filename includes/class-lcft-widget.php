@@ -153,6 +153,8 @@ class LCFT_Widget {
 					'you'          => __( 'You', 'live-chat-for-telegram' ),
 					'sending'      => __( 'Sending…', 'live-chat-for-telegram' ),
 					'edited'       => __( 'edited', 'live-chat-for-telegram' ),
+					'today'        => __( 'Today', 'live-chat-for-telegram' ),
+					'yesterday'    => __( 'Yesterday', 'live-chat-for-telegram' ),
 					'tooLarge'     => __( 'That file is too large.', 'live-chat-for-telegram' ),
 					/* translators: Base name given to a pasted screenshot, followed by the date and time. */
 					'screenshot'   => __( 'screenshot', 'live-chat-for-telegram' ),

@@ -28,6 +28,7 @@
 		sending: false,
 		pendingFile: null,
 		lastGroup: null,
+		lastDay: null,
 		replaying: false
 	};
 
@@ -129,6 +130,68 @@
 		}
 
 		return fragment;
+	}
+
+	/**
+	 * Returns the label of the day a message belongs to: today, yesterday, or the date.
+	 *
+	 * The year is only shown for another year, the way most messaging apps do.
+	 *
+	 * @param {Date} date The message date.
+	 * @return {string} The label.
+	 */
+	function formatDay( date ) {
+		var today = new Date();
+		var yesterday = new Date();
+
+		yesterday.setDate( today.getDate() - 1 );
+
+		if ( date.toDateString() === today.toDateString() ) {
+			return config.i18n.today;
+		}
+
+		if ( date.toDateString() === yesterday.toDateString() ) {
+			return config.i18n.yesterday;
+		}
+
+		var options = { weekday: 'long', day: 'numeric', month: 'long' };
+
+		if ( date.getFullYear() !== today.getFullYear() ) {
+			options.year = 'numeric';
+		}
+
+		try {
+			var label = new Intl.DateTimeFormat( document.documentElement.lang || undefined, options ).format( date );
+
+			return label.charAt( 0 ).toUpperCase() + label.slice( 1 );
+		} catch ( error ) {
+			return date.toLocaleDateString();
+		}
+	}
+
+	/**
+	 * Draws a day separator above the first message of each day.
+	 *
+	 * @param {string} iso The message date.
+	 */
+	function maybeRenderDay( iso ) {
+		var date = new Date( iso );
+
+		if ( isNaN( date.getTime() ) || date.toDateString() === state.lastDay ) {
+			return;
+		}
+
+		state.lastDay = date.toDateString();
+
+		var separator = document.createElement( 'div' );
+		separator.className = 'lcft-day';
+		separator.setAttribute( 'role', 'separator' );
+
+		var label = document.createElement( 'span' );
+		label.textContent = formatDay( date );
+		separator.appendChild( label );
+
+		el.log.appendChild( separator );
 	}
 
 	/**
@@ -340,6 +403,8 @@
 		}
 
 		state.lastGroup = message.mediaGroupId || null;
+
+		maybeRenderDay( message.created );
 
 		var bubble = document.createElement( 'div' );
 		bubble.className = 'lcft-msg lcft-msg--' + ( message.direction === 'in' ? 'me' : 'them' );

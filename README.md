@@ -226,6 +226,9 @@ Set a retention period under **Advanced** to delete old messages and their files
 
 ## Changelog
 
+### 1.1.7 - 2026-10-05
+- **New:** The conversation shows the date once per day, above that day's first message (Today, Yesterday, then the full date)
+
 ### 1.1.6 - 2026-10-05
 - **New:** `--lcft-member-initial` and `--lcft-agent-initial` custom properties on the chat, holding the first letter of the member's first name and of the support name, for sites that draw a letter avatar beside each message
 

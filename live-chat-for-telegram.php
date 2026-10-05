@@ -3,7 +3,7 @@
  * Plugin Name: Live Chat for Telegram
  * Plugin URI: https://github.com/guilamu/live-chat-for-telegram
  * Description: A live chat bubble for logged in users, answered from a Telegram group. Each member gets their own forum topic, so replies come from any phone without a dedicated app.
- * Version: 1.1.6
+ * Version: 1.1.7
  * Author: Guilamu
  * Author URI: https://github.com/guilamu
  * Update URI: https://github.com/guilamu/live-chat-for-telegram/
@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'LCFT_VERSION', '1.1.6' );
+define( 'LCFT_VERSION', '1.1.7' );
 define( 'LCFT_PLUGIN_FILE', __FILE__ );
 define( 'LCFT_PATH', plugin_dir_path( __FILE__ ) );
 define( 'LCFT_URL', plugin_dir_url( __FILE__ ) );

@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Live Chat for Telegram 1.1.6\n"
+"Project-Id-Version: Live Chat for Telegram 1.1.7\n"
 "Report-Msgid-Bugs-To: https://github.com/guilamu/live-chat-for-telegram/"
 "issues\n"
 "POT-Creation-Date: 2026-08-04T00:00:00+00:00\n"
@@ -889,3 +889,11 @@ msgstr "Retirer le fichier"
 #: includes/class-lcft-widget.php
 msgid "screenshot"
 msgstr "capture"
+
+#: includes/class-lcft-widget.php
+msgid "Today"
+msgstr "Aujourd'hui"
+
+#: includes/class-lcft-widget.php
+msgid "Yesterday"
+msgstr "Hier"

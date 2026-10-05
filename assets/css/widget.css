@@ -248,6 +248,26 @@
 	font-size: 14px;
 }
 
+/* # Day separators ---------------------------------------------------------------------------- */
+
+.lcft-day {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 4px 0;
+	color: var( --lcft-muted );
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.lcft-day::before,
+.lcft-day::after {
+	content: "";
+	flex: 1 1 auto;
+	height: 1px;
+	background: var( --lcft-border );
+}
+
 /* # Messages ---------------------------------------------------------------------------------- */
 
 .lcft-msg {
