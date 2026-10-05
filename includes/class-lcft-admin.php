@@ -163,6 +163,20 @@ class LCFT_Admin {
 				. '</p></div>';
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Display only.
+		$stripped = isset( $_GET['stripped'] ) ? array_filter( array_map( 'sanitize_key', explode( ',', wp_unslash( $_GET['stripped'] ) ) ) ) : array();
+
+		if ( $stripped ) {
+			echo '<div class="notice notice-warning"><p>'
+				. sprintf(
+					/* translators: 1: The tags removed from the card template. 2: The tags Telegram supports. */
+					esc_html__( 'Telegram does not support these HTML tags, so they were removed from the card template: %1$s. Use only: %2$s.', 'live-chat-for-telegram' ),
+					'<code>' . esc_html( implode( ', ', $stripped ) ) . '</code>',
+					esc_html( implode( ', ', array_keys( self::telegram_html() ) ) )
+				)
+				. '</p></div>';
+		}
+
 		echo '<h2 class="nav-tab-wrapper">';
 
 		foreach ( $tabs as $slug => $label ) {
@@ -485,7 +499,8 @@ class LCFT_Admin {
 		check_admin_referer( 'lcft_save', 'lcft_nonce' );
 
 		$tab    = isset( $_POST['tab'] ) ? sanitize_key( wp_unslash( $_POST['tab'] ) ) : '';
-		$values = array();
+		$values        = array();
+		$stripped_tags = array();
 
 		switch ( $tab ) {
 
@@ -535,10 +550,12 @@ class LCFT_Admin {
 				$values['gf_field_map']         = self::parse_field_map( isset( $_POST['gf_field_map'] ) ? (string) wp_unslash( $_POST['gf_field_map'] ) : '' );
 				$values['topic_title_template'] = isset( $_POST['topic_title_template'] ) ? sanitize_text_field( wp_unslash( $_POST['topic_title_template'] ) ) : '';
 
-				// The card is Telegram HTML, so the tags Telegram understands have to survive.
-				$values['card_template'] = isset( $_POST['card_template'] )
-					? wp_kses( trim( (string) wp_unslash( $_POST['card_template'] ) ), self::telegram_html() )
-					: '';
+				// The card is Telegram HTML, so the tags Telegram understands have to survive. The
+				// others are stripped, since one of them would make every card fail to post, but the
+				// admin is told which ones went rather than finding their formatting gone.
+				$card_template           = isset( $_POST['card_template'] ) ? trim( (string) wp_unslash( $_POST['card_template'] ) ) : '';
+				$stripped_tags           = LCFT_Format::get_disallowed_tags( $card_template );
+				$values['card_template'] = wp_kses( $card_template, self::telegram_html() );
 
 				// The form or the map changing invalidates every cached entry lookup.
 				self::flush_entry_cache();
@@ -561,16 +578,17 @@ class LCFT_Admin {
 			LCFT_Settings::update( $values );
 		}
 
-		wp_safe_redirect(
-			add_query_arg(
-				array(
-					'page'  => self::SLUG,
-					'tab'   => $tab,
-					'saved' => 1,
-				),
-				admin_url( 'admin.php' )
-			)
+		$query = array(
+			'page'  => self::SLUG,
+			'tab'   => $tab,
+			'saved' => 1,
 		);
+
+		if ( ! empty( $stripped_tags ) ) {
+			$query['stripped'] = implode( ',', $stripped_tags );
+		}
+
+		wp_safe_redirect( add_query_arg( $query, admin_url( 'admin.php' ) ) );
 
 		exit;
 	}
@@ -1383,18 +1401,7 @@ class LCFT_Admin {
 	 * @return array
 	 */
 	protected static function telegram_html() {
-
-		return array(
-			'b'      => array(),
-			'strong' => array(),
-			'i'      => array(),
-			'em'     => array(),
-			'u'      => array(),
-			's'      => array(),
-			'code'   => array(),
-			'pre'    => array(),
-			'a'      => array( 'href' => array() ),
-		);
+		return LCFT_Format::telegram_html();
 	}
 
 	/**

@@ -692,14 +692,7 @@ class LCFT_Telegram_API {
 	 * @return string
 	 */
 	protected function truncate( $text, $length ) {
-
-		$text = (string) $text;
-
-		if ( mb_strlen( $text, 'UTF-8' ) <= $length ) {
-			return $text;
-		}
-
-		return mb_substr( $text, 0, $length, 'UTF-8' );
+		return LCFT_Format::truncate( $text, $length );
 	}
 
 	/**

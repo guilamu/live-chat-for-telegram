@@ -120,8 +120,10 @@ class LCFT_Chat {
 
 		if ( $attachment ) {
 
+			// Measured before escaping: Telegram applies the limit after parsing entities, in
+			// UTF-16 code units.
 			$caption = LCFT_Format::escape_html( $text );
-			$inline  = mb_strlen( $caption, 'UTF-8' ) <= LCFT_Telegram_API::MAX_CAPTION_LENGTH;
+			$inline  = LCFT_Format::length( $text ) <= LCFT_Telegram_API::MAX_CAPTION_LENGTH;
 
 			$args = array_merge(
 				$common,

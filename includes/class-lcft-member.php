@@ -141,8 +141,9 @@ class LCFT_Member {
 		$tokens = self::get_tokens( $user_id );
 
 		// Values reach the card straight from user input, so they are escaped before any markup is
-		// added around them. Escaping the assembled card instead would eat the tags.
-		$escaped = array_map( array( 'LCFT_Format', 'escape_html' ), $tokens );
+		// added around them. Escaping the assembled card instead would eat the tags. Quotes are
+		// escaped too, since a placeholder may sit inside an href in the template.
+		$escaped = array_map( array( 'LCFT_Format', 'escape_template_value' ), $tokens );
 
 		$template = (string) LCFT_Settings::get( 'card_template', '' );
 

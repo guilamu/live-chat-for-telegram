@@ -207,6 +207,13 @@ Set a retention period under **Advanced** to delete old messages and their files
 
 ## Changelog
 
+### 1.1.0 - 2026-10-05
+- **Fixed:** Message length is counted in UTF-16 code units, as Telegram counts it, so long messages full of emoji are split correctly instead of being rejected; the same applies to captions and topic names
+- **Fixed:** A member value containing a quote no longer breaks the pinned card when its placeholder sits inside a link (`<a href="{…}">`)
+- **Fixed:** The pinned card template now keeps every tag Telegram supports (`blockquote`, `tg-spoiler`, `ins`, `del`, `strike`, spoiler `span`, `code` language class, `tg-emoji`), which were previously removed on save
+- **Improved:** Saving a card template that contains unsupported HTML tags now shows a warning naming the tags that were removed
+- **Changed:** The Guilamu Bug Reporter integration is removed; the **🐛 Report a Bug** link on the Plugins screen now opens a new GitHub issue
+
 ### 1.0.0 - 2026-08-04
 - Initial release
 - **New:** Chat bubble restricted to signed in WordPress users, with one permanent Telegram forum topic per member

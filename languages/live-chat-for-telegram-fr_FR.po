@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Live Chat for Telegram 1.0.0\n"
+"Project-Id-Version: Live Chat for Telegram 1.1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/guilamu/live-chat-for-telegram/"
 "issues\n"
 "POT-Creation-Date: 2026-08-04T00:00:00+00:00\n"
-"PO-Revision-Date: 2026-08-04 12:29+0200\n"
+"PO-Revision-Date: 2026-10-05 12:00+0200\n"
 "Last-Translator: Guilamu\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -31,10 +31,6 @@ msgstr "Voir les détails"
 #: live-chat-for-telegram.php:249
 msgid "🐛 Report a Bug"
 msgstr "🐛 Signaler un bug"
-
-#: live-chat-for-telegram.php:254
-msgid "🐛 Report a Bug (install Bug Reporter)"
-msgstr "🐛 Signaler un bug (installer Bug Reporter)"
 
 #: includes/class-lcft-attachments.php:78
 msgid "No file was received."
@@ -869,3 +865,8 @@ msgstr "Insérer un emoji"
 #: includes/class-lcft-widget.php:228
 msgid "Sign in to chat with us"
 msgstr "Connectez-vous pour discuter avec nous"
+
+#. translators: 1: The tags removed from the card template. 2: The tags Telegram supports.
+#: includes/class-lcft-admin.php
+msgid "Telegram does not support these HTML tags, so they were removed from the card template: %1$s. Use only: %2$s."
+msgstr "Telegram ne prend pas en charge ces balises HTML ; elles ont été retirées du modèle de fiche : %1$s. Utilisez uniquement : %2$s."

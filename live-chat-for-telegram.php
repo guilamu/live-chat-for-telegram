@@ -3,7 +3,7 @@
  * Plugin Name: Live Chat for Telegram
  * Plugin URI: https://github.com/guilamu/live-chat-for-telegram
  * Description: A live chat bubble for logged in users, answered from a Telegram group. Each member gets their own forum topic, so replies come from any phone without a dedicated app.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Guilamu
  * Author URI: https://github.com/guilamu
  * Update URI: https://github.com/guilamu/live-chat-for-telegram/
@@ -33,7 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'LCFT_VERSION', '1.0.0' );
+define( 'LCFT_VERSION', '1.1.0' );
 define( 'LCFT_PLUGIN_FILE', __FILE__ );
 define( 'LCFT_PATH', plugin_dir_path( __FILE__ ) );
 define( 'LCFT_URL', plugin_dir_url( __FILE__ ) );
@@ -91,7 +91,6 @@ add_filter( 'rest_authentication_errors', array( 'LCFT_Webhook', 'allow_own_rout
 add_action( 'lcft_purge_expired', array( 'LCFT_Conversations', 'purge' ) );
 add_action( 'init', 'lcft_schedule_purge' );
 add_action( 'init', 'lcft_load_textdomain' );
-add_action( 'plugins_loaded', 'lcft_register_bug_reporter', 20 );
 add_filter( 'plugin_row_meta', 'lcft_plugin_row_meta', 10, 2 );
 
 /**
@@ -192,27 +191,6 @@ function lcft_load_textdomain() {
 }
 
 /**
- * Registers the plugin with the Guilamu Bug Reporter, when it is installed.
- *
- * @since 0.1.0
- */
-function lcft_register_bug_reporter() {
-
-	if ( ! class_exists( 'Guilamu_Bug_Reporter' ) ) {
-		return;
-	}
-
-	Guilamu_Bug_Reporter::register(
-		array(
-			'slug'        => 'live-chat-for-telegram',
-			'name'        => 'Live Chat for Telegram',
-			'version'     => LCFT_VERSION,
-			'github_repo' => 'guilamu/live-chat-for-telegram',
-		)
-	);
-}
-
-/**
  * Adds the View details and Report a Bug links to the plugin's row on the Plugins screen.
  *
  * @since 0.1.0
@@ -242,18 +220,12 @@ function lcft_plugin_row_meta( $links, $file ) {
 		esc_html__( 'View details', 'live-chat-for-telegram' )
 	);
 
-	if ( class_exists( 'Guilamu_Bug_Reporter' ) ) {
-		$links[] = sprintf(
-			'<a href="#" class="guilamu-bug-report-btn" data-plugin-slug="live-chat-for-telegram" data-plugin-name="%s">%s</a>',
-			esc_attr__( 'Live Chat for Telegram', 'live-chat-for-telegram' ),
-			esc_html__( '🐛 Report a Bug', 'live-chat-for-telegram' )
-		);
-	} else {
-		$links[] = sprintf(
-			'<a href="https://github.com/guilamu/guilamu-bug-reporter/releases" target="_blank">%s</a>',
-			esc_html__( '🐛 Report a Bug (install Bug Reporter)', 'live-chat-for-telegram' )
-		);
-	}
+	// Bugs are reported as GitHub issues on the plugin's own repository.
+	$links[] = sprintf(
+		'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+		esc_url( 'https://github.com/guilamu/live-chat-for-telegram/issues/new' ),
+		esc_html__( '🐛 Report a Bug', 'live-chat-for-telegram' )
+	);
 
 	return $links;
 }
