@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Live Chat for Telegram 1.1.7\n"
+"Project-Id-Version: Live Chat for Telegram 1.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/guilamu/live-chat-for-telegram/"
 "issues\n"
 "POT-Creation-Date: 2026-08-04T00:00:00+00:00\n"
@@ -897,3 +897,104 @@ msgstr "Aujourd'hui"
 #: includes/class-lcft-widget.php
 msgid "Yesterday"
 msgstr "Hier"
+
+msgid "Page builders"
+msgstr "Constructeurs de pages"
+
+msgid "Also display the bubble while editing pages"
+msgstr "Afficher aussi la bulle pendant l'édition des pages"
+
+msgid "Off by default: the bubble is hidden in the Divi Visual Builder, the block editor and theme customizer previews, Elementor and Beaver Builder, where it only gets in the way of editing."
+msgstr "Désactivé par défaut : la bulle est masquée dans le Visual Builder de Divi, les aperçus de l'éditeur de blocs et de l'outil de personnalisation, Elementor et Beaver Builder, où elle ne fait que gêner l'édition."
+
+#: includes/class-lcft-admin.php
+msgid "Timezone"
+msgstr "Fuseau horaire"
+
+#: includes/class-lcft-admin.php
+msgid "Same as the site (%s)"
+msgstr "Identique au site (%s)"
+
+#: includes/class-lcft-admin.php
+msgid "The hours below are read in this timezone. It is currently <b>%1$s</b> there. %2$s"
+msgstr "Les horaires ci-dessous sont lus dans ce fuseau. Il y est actuellement <b>%1$s</b>. %2$s"
+
+#: includes/class-lcft-admin.php
+msgid "Opening hours are off, so members are never told the desk is closed."
+msgstr "Les horaires d'ouverture sont désactivés : les membres ne sont jamais prévenus d'une absence."
+
+#: includes/class-lcft-admin.php
+msgid "The desk is open right now."
+msgstr "Le support est ouvert en ce moment."
+
+#: includes/class-lcft-admin.php
+msgid "The desk is closed right now."
+msgstr "Le support est fermé en ce moment."
+
+#: includes/class-lcft-admin.php
+msgid "Preview"
+msgstr "Aperçu"
+
+#: includes/class-lcft-admin.php
+msgid "Present"
+msgstr "Présent"
+
+#: includes/class-lcft-admin.php
+msgid "Absent"
+msgstr "Absent"
+
+#: includes/class-lcft-admin.php
+msgid "Closed bubble"
+msgstr "Bulle fermée"
+
+#: includes/class-lcft-admin.php
+msgid "Signed out"
+msgstr "Déconnecté"
+
+#: includes/class-lcft-admin.php
+msgid "State shown"
+msgstr "État affiché"
+
+#: includes/class-lcft-admin.php
+msgid "With an ongoing conversation"
+msgstr "Avec une conversation en cours"
+
+#: includes/class-lcft-admin.php
+msgid "Hello, I have a question about my membership."
+msgstr "Bonjour, j'ai une question sur mon adhésion."
+
+#: includes/class-lcft-admin.php
+msgid "Hello! Of course, how can we help?"
+msgstr "Bonjour ! Bien sûr, que pouvons-nous faire pour vous ?"
+
+#: includes/class-lcft-admin.php
+msgid "On the site, the theme's main colour replaces this one when the theme defines it."
+msgstr "Sur le site, la couleur principale du thème remplace celle-ci lorsque le thème en définit une."
+
+#: includes/class-lcft-admin.php
+msgid "The closed message is worked out from the saved hours: save to see changes to them here."
+msgstr "Le message d'absence est calculé à partir des horaires enregistrés : enregistrez pour voir ici vos modifications."
+
+#: includes/class-lcft-admin.php
+msgid "Signed out visitors currently see nothing: this button only appears with \"Show the bubble, inviting them to sign in\"."
+msgstr "Les visiteurs déconnectés ne voient actuellement rien : ce bouton n'apparaît qu'avec « Afficher la bulle en les invitant à se connecter »."
+
+#: includes/class-lcft-admin.php
+msgid "The welcome message only appears to members who have never written."
+msgstr "Le message d'accueil n'apparaît qu'aux membres qui n'ont encore jamais écrit."
+
+#: includes/class-lcft-schedule.php
+msgid "Support will be available in %d min."
+msgstr "Le support sera disponible dans %d min."
+
+#: includes/class-lcft-schedule.php
+msgid "Support will be available from %s."
+msgstr "Le support sera disponible dès %s."
+
+#: includes/class-lcft-schedule.php
+msgid "Support will be available tomorrow, from %s."
+msgstr "Le support sera disponible demain, dès %s."
+
+#: includes/class-lcft-schedule.php
+msgid "Support will be available on %1$s, from %2$s."
+msgstr "Le support sera disponible %1$s, dès %2$s."

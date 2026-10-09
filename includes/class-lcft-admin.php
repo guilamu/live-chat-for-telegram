@@ -86,7 +86,17 @@ class LCFT_Admin {
 
 		wp_enqueue_media();
 
-		wp_enqueue_style( 'lcft-admin', LCFT_URL . 'assets/css/admin.css', array(), LCFT_VERSION );
+		// The widget's own stylesheet drives the preview, so what is shown here is what members see.
+		// Loaded first, so the preview's few layout overrides in admin.css win at equal specificity.
+		wp_enqueue_style( 'lcft-widget', LCFT_URL . 'assets/css/widget.css', array(), LCFT_VERSION );
+
+		$custom_css = trim( wp_strip_all_tags( (string) LCFT_Settings::get( 'custom_css', '' ) ) );
+
+		if ( '' !== $custom_css ) {
+			wp_add_inline_style( 'lcft-widget', $custom_css );
+		}
+
+		wp_enqueue_style( 'lcft-admin', LCFT_URL . 'assets/css/admin.css', array( 'lcft-widget' ), LCFT_VERSION );
 		wp_enqueue_script( 'lcft-admin', LCFT_URL . 'assets/js/admin.js', array( 'media-editor' ), LCFT_VERSION, true );
 
 		wp_localize_script(
@@ -101,6 +111,7 @@ class LCFT_Admin {
 					'chooseImage' => __( 'Choose an avatar', 'live-chat-for-telegram' ),
 					'useImage'    => __( 'Use this image', 'live-chat-for-telegram' ),
 				),
+				'preview' => self::preview_data(),
 			)
 		);
 	}
@@ -195,8 +206,20 @@ class LCFT_Admin {
 		echo '<input type="hidden" name="action" value="lcft_save" />';
 		echo '<input type="hidden" name="tab" value="' . esc_attr( $current ) . '" />';
 
-		$method = 'render_' . $current;
+		$method      = 'render_' . $current;
+		$has_preview = in_array( $current, array( 'widget', 'hours' ), true );
+
+		if ( $has_preview ) {
+			echo '<div class="lcft-with-preview"><div class="lcft-with-preview__fields">';
+		}
+
 		self::$method();
+
+		if ( $has_preview ) {
+			echo '</div>';
+			self::render_preview( 'hours' === $current ? 'absent' : 'present' );
+			echo '</div>';
+		}
 
 		submit_button();
 
@@ -287,6 +310,12 @@ class LCFT_Admin {
 		);
 
 		self::row(
+			__( 'Page builders', 'live-chat-for-telegram' ),
+			self::checkbox_field( 'widget_in_builders', __( 'Also display the bubble while editing pages', 'live-chat-for-telegram' ) ),
+			__( 'Off by default: the bubble is hidden in the Divi Visual Builder, the block editor and theme customizer previews, Elementor and Beaver Builder, where it only gets in the way of editing.', 'live-chat-for-telegram' )
+		);
+
+		self::row(
 			__( 'Support name', 'live-chat-for-telegram' ),
 			self::text_field( 'agent_name' ),
 			__( 'Shown to the member on every reply. A single name for the whole team is intentional: they are talking to a support desk, not to whichever phone answered.', 'live-chat-for-telegram' )
@@ -368,6 +397,12 @@ class LCFT_Admin {
 			__( 'Opening hours', 'live-chat-for-telegram' ),
 			self::checkbox_field( 'schedule_enabled', __( 'Tell members when the desk is staffed', 'live-chat-for-telegram' ) ),
 			__( 'Messages are always accepted. Outside these hours the member is told when to expect an answer rather than being turned away.', 'live-chat-for-telegram' )
+		);
+
+		self::row(
+			__( 'Timezone', 'live-chat-for-telegram' ),
+			self::timezone_field(),
+			self::timezone_status()
 		);
 
 		$schedule = (array) LCFT_Settings::get( 'schedule', LCFT_Settings::default_schedule() );
@@ -498,6 +533,150 @@ class LCFT_Admin {
 	}
 
 
+	// # PREVIEW -------------------------------------------------------------------------------------------------------
+
+	/**
+	 * Prints the preview of what a member sees, beside the widget and hours tabs.
+	 *
+	 * Built from the widget's own classes and stylesheet rather than a picture of it, so it follows
+	 * the real thing — custom CSS included. admin.js keeps it in step with the fields as they are
+	 * edited, before anything is saved.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param string $state The state shown first: present, absent, bubble or invite.
+	 */
+	protected static function render_preview( $state ) {
+
+		$states = array(
+			'present' => __( 'Present', 'live-chat-for-telegram' ),
+			'absent'  => __( 'Absent', 'live-chat-for-telegram' ),
+			'bubble'  => __( 'Closed bubble', 'live-chat-for-telegram' ),
+			'invite'  => __( 'Signed out', 'live-chat-for-telegram' ),
+		);
+
+		$position = 'left' === LCFT_Settings::get( 'widget_position', 'right' ) ? 'lcft--left' : 'lcft--right';
+		$avatar   = (string) LCFT_Settings::get( 'agent_avatar_url', '' );
+		$accent   = sanitize_hex_color( (string) LCFT_Settings::get( 'widget_accent', '#1c3f94' ) );
+		$style    = '--lcft-accent:' . ( $accent ? $accent : '#1c3f94' ) . ';';
+
+		?>
+		<div class="lcft-preview" data-lcft-preview data-state="<?php echo esc_attr( $state ); ?>">
+			<h2 class="lcft-preview__title"><?php esc_html_e( 'Preview', 'live-chat-for-telegram' ); ?></h2>
+
+			<div class="lcft-preview__states" role="group" aria-label="<?php esc_attr_e( 'State shown', 'live-chat-for-telegram' ); ?>">
+				<?php foreach ( $states as $slug => $label ) : ?>
+					<button type="button" class="button<?php echo $slug === $state ? ' is-active' : ''; ?>"
+						data-lcft-preview-state="<?php echo esc_attr( $slug ); ?>"
+						aria-pressed="<?php echo $slug === $state ? 'true' : 'false'; ?>"><?php echo esc_html( $label ); ?></button>
+				<?php endforeach; ?>
+			</div>
+
+			<label class="lcft-preview__option">
+				<input type="checkbox" data-lcft-preview-sample />
+				<?php esc_html_e( 'With an ongoing conversation', 'live-chat-for-telegram' ); ?>
+			</label>
+
+			<div class="lcft-preview__stage" aria-hidden="true">
+				<div class="lcft-preview__page">
+					<span></span><span></span><span></span><span></span><span></span>
+				</div>
+
+				<div class="lcft <?php echo esc_attr( $position ); ?>" data-lcft-preview-widget style="<?php echo esc_attr( $style ); ?>">
+					<div class="lcft__panel" data-lcft-preview-panel>
+						<header class="lcft__header">
+							<img class="lcft__avatar" src="<?php echo esc_url( $avatar ); ?>" alt="" width="32" height="32" data-lcft-preview-avatar<?php echo '' === $avatar ? ' hidden' : ''; ?> />
+							<span class="lcft__title" data-lcft-preview-name><?php echo esc_html( LCFT_Settings::get( 'agent_name' ) ); ?></span>
+							<span class="lcft__close">&times;</span>
+						</header>
+
+						<div class="lcft__notice" data-lcft-preview-notice></div>
+
+						<div class="lcft__log">
+							<div class="lcft-welcome" data-lcft-preview-welcome></div>
+							<div class="lcft-day" data-lcft-preview-sample-item><?php esc_html_e( 'Today', 'live-chat-for-telegram' ); ?></div>
+							<div class="lcft-msg lcft-msg--me" data-lcft-preview-sample-item>
+								<div class="lcft-msg__body"><?php esc_html_e( 'Hello, I have a question about my membership.', 'live-chat-for-telegram' ); ?></div>
+								<div class="lcft-msg__meta" data-lcft-preview-time="-4"></div>
+							</div>
+							<div class="lcft-msg lcft-msg--them" data-lcft-preview-sample-item>
+								<div class="lcft-msg__body"><?php esc_html_e( 'Hello! Of course, how can we help?', 'live-chat-for-telegram' ); ?></div>
+								<div class="lcft-msg__meta" data-lcft-preview-time="-2"></div>
+							</div>
+						</div>
+
+						<div class="lcft__composer">
+							<span class="lcft__input"><?php esc_html_e( 'Write your message…', 'live-chat-for-telegram' ); ?></span>
+							<?php if ( LCFT_Settings::get( 'emoji_enabled', true ) ) : ?>
+								<span class="lcft__emoji"><?php echo LCFT_Widget::composer_icon( 'emoji' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static markup. ?></span>
+							<?php endif; ?>
+							<?php if ( LCFT_Settings::get( 'attachments_enabled', true ) ) : ?>
+								<span class="lcft__attach"><?php echo LCFT_Widget::composer_icon( 'attach' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static markup. ?></span>
+							<?php endif; ?>
+							<span class="lcft__send"><?php echo LCFT_Widget::composer_icon( 'send' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static markup. ?></span>
+						</div>
+					</div>
+
+					<span class="lcft__bubble">
+						<span class="lcft__bubble-icon"><?php echo LCFT_Widget::chat_icon(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static markup. ?></span>
+						<span class="lcft__badge">1</span>
+					</span>
+				</div>
+
+				<div class="lcft lcft--invite <?php echo esc_attr( $position ); ?>" data-lcft-preview-invite style="<?php echo esc_attr( $style ); ?>" hidden>
+					<span class="lcft__bubble">
+						<span class="lcft__bubble-icon"><?php echo LCFT_Widget::chat_icon(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Static markup. ?></span>
+						<span class="lcft__invite-label"><?php esc_html_e( 'Sign in to chat with us', 'live-chat-for-telegram' ); ?></span>
+					</span>
+				</div>
+			</div>
+
+			<p class="description" data-lcft-preview-hint></p>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Returns what the preview script needs beyond the fields on the page.
+	 *
+	 * Placeholders are filled from the current administrator's own details, the closest stand-in
+	 * for a member available here.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return array
+	 */
+	protected static function preview_data() {
+
+		$tokens = array();
+
+		foreach ( LCFT_Member::get_tokens( get_current_user_id() ) as $name => $value ) {
+			if ( is_scalar( $value ) ) {
+				$tokens[ $name ] = (string) $value;
+			}
+		}
+
+		return array(
+			'tokens'        => $tokens,
+			'agentName'     => (string) LCFT_Settings::get( 'agent_name', '' ),
+			'avatar'        => (string) LCFT_Settings::get( 'agent_avatar_url', '' ),
+			'accent'        => (string) LCFT_Settings::get( 'widget_accent', '#1c3f94' ),
+			'themeAccent'   => (bool) LCFT_Settings::get( 'widget_theme_accent', true ),
+			'position'      => (string) LCFT_Settings::get( 'widget_position', 'right' ),
+			'welcome'       => (string) LCFT_Settings::get( 'welcome_message', '' ),
+			'closedMessage' => (string) LCFT_Settings::get( 'closed_message', '' ),
+			'autoNotice'    => LCFT_Schedule::automatic_notice(),
+			'inviteMode'    => (string) LCFT_Settings::get( 'logged_out_mode', 'hide' ),
+			'i18n'          => array(
+				'themeAccent' => __( "On the site, the theme's main colour replaces this one when the theme defines it.", 'live-chat-for-telegram' ),
+				'autoNotice'  => __( 'The closed message is worked out from the saved hours: save to see changes to them here.', 'live-chat-for-telegram' ),
+				'inviteOff'   => __( 'Signed out visitors currently see nothing: this button only appears with "Show the bubble, inviting them to sign in".', 'live-chat-for-telegram' ),
+				'welcomeOnly' => __( 'The welcome message only appears to members who have never written.', 'live-chat-for-telegram' ),
+			),
+		);
+	}
+
+
 	// # SAVING --------------------------------------------------------------------------------------------------------
 
 	/**
@@ -541,6 +720,7 @@ class LCFT_Admin {
 
 			case 'widget':
 				$values['widget_enabled']   = ! empty( $_POST['widget_enabled'] );
+				$values['widget_in_builders'] = ! empty( $_POST['widget_in_builders'] );
 				$values['agent_name']       = isset( $_POST['agent_name'] ) ? sanitize_text_field( wp_unslash( $_POST['agent_name'] ) ) : '';
 				$values['agent_avatar_url'] = isset( $_POST['agent_avatar_url'] ) ? esc_url_raw( wp_unslash( $_POST['agent_avatar_url'] ) ) : '';
 				$values['welcome_message']  = isset( $_POST['welcome_message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['welcome_message'] ) ) : '';
@@ -562,6 +742,7 @@ class LCFT_Admin {
 				$values['schedule']            = self::sanitize_schedule( isset( $_POST['schedule'] ) ? (array) wp_unslash( $_POST['schedule'] ) : array() );
 				$values['schedule_exceptions'] = self::parse_exceptions( isset( $_POST['schedule_exceptions'] ) ? (string) wp_unslash( $_POST['schedule_exceptions'] ) : '' );
 				$values['closed_message']      = isset( $_POST['closed_message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['closed_message'] ) ) : '';
+				$values['schedule_timezone']   = self::sanitize_timezone( isset( $_POST['schedule_timezone'] ) ? (string) wp_unslash( $_POST['schedule_timezone'] ) : '' );
 				break;
 
 			case 'members':
@@ -1234,6 +1415,89 @@ class LCFT_Admin {
 	}
 
 	/**
+	 * Returns the timezone picker for the opening hours.
+	 *
+	 * WordPress' own list (cities, then manual UTC offsets), headed by an entry that follows the
+	 * site setting, which stays the default so existing installs keep behaving as before.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return string
+	 */
+	protected static function timezone_field() {
+
+		$current = (string) LCFT_Settings::get( 'schedule_timezone', '' );
+
+		// Core adds its own empty "Select a city" entry when nothing is selected; ours replaces it.
+		$choices = preg_replace( '#<option[^>]*value=""[^>]*>[^<]*</option>#', '', wp_timezone_choice( $current, get_user_locale() ) );
+
+		$site = sprintf(
+			/* translators: %s: The site's timezone, for example "Europe/Paris" or "UTC+0". */
+			__( "Same as the site (%s)", 'live-chat-for-telegram' ),
+			wp_timezone_string()
+		);
+
+		return '<select name="schedule_timezone" id="schedule_timezone">'
+			. '<option value=""' . selected( $current, '', false ) . '>' . esc_html( $site ) . '</option>'
+			. $choices
+			. '</select>';
+	}
+
+	/**
+	 * Returns the line under the timezone picker: the time it is in that zone right now, and
+	 * whether the desk is open, so a wrong setting shows at a glance.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return string
+	 */
+	protected static function timezone_status() {
+
+		$now = LCFT_Schedule::now();
+
+		$time = wp_date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $now->getTimestamp(), LCFT_Schedule::timezone() );
+
+		if ( ! LCFT_Settings::get( 'schedule_enabled', false ) ) {
+			$state = __( 'Opening hours are off, so members are never told the desk is closed.', 'live-chat-for-telegram' );
+		} elseif ( LCFT_Schedule::is_open() ) {
+			$state = __( 'The desk is open right now.', 'live-chat-for-telegram' );
+		} else {
+			$state = __( 'The desk is closed right now.', 'live-chat-for-telegram' );
+		}
+
+		return sprintf(
+			/* translators: 1: A date and time. 2: Whether the desk is open. */
+			__( 'The hours below are read in this timezone. It is currently <b>%1$s</b> there. %2$s', 'live-chat-for-telegram' ),
+			esc_html( $time ),
+			esc_html( $state )
+		);
+	}
+
+	/**
+	 * Validates a timezone picked in timezone_field().
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param string $timezone The submitted value.
+	 *
+	 * @return string The timezone, or an empty string to follow the site.
+	 */
+	protected static function sanitize_timezone( $timezone ) {
+
+		$timezone = trim( $timezone );
+
+		if ( in_array( $timezone, timezone_identifiers_list(), true ) ) {
+			return $timezone;
+		}
+
+		if ( preg_match( '/^UTC[+-]\d{1,2}(\.\d+)?$/', $timezone ) ) {
+			return $timezone;
+		}
+
+		return '';
+	}
+
+	/**
 	 * Returns the day name for a weekday number.
 	 *
 	 * @since 0.1.0
@@ -1450,10 +1714,12 @@ class LCFT_Admin {
 				'name' => array(),
 				'id'   => array(),
 			),
+			'optgroup' => array( 'label' => array() ),
 			'option'   => array(
 				'value'    => array(),
 				'selected' => array(),
 			),
+			'b'        => array(),
 			'textarea' => array(
 				'name'  => array(),
 				'id'    => array(),

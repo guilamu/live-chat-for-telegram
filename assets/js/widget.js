@@ -603,6 +603,11 @@
 		api( withQuery( '/messages', { since: state.cursor } ) )
 			.then( function ( data ) {
 				appendMessages( data.messages );
+
+				if ( typeof data.notice === 'string' ) {
+					el.notice.dataset.closed = data.notice;
+				}
+
 				setNotice( data.open ? '' : el.notice.dataset.closed || '' );
 
 				if ( data.undelivered ) {

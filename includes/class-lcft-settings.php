@@ -62,6 +62,7 @@ class LCFT_Settings {
 
 			// Widget appearance and behaviour.
 			'widget_enabled'       => true,
+			'widget_in_builders'   => false,
 			'widget_position'      => 'right',
 			'widget_accent'        => '#1c3f94',
 			'widget_theme_accent'  => true,
@@ -81,6 +82,7 @@ class LCFT_Settings {
 			'schedule_enabled'     => false,
 			'schedule'             => self::default_schedule(),
 			'schedule_exceptions'  => array(),
+			'schedule_timezone'    => '',
 			'closed_message'       => '',
 
 			// Member details pulled from a Gravity Forms entry. Left empty by default: the field

@@ -242,3 +242,137 @@
 .lcft-mt__item[hidden] {
 	display: none;
 }
+
+/* # Preview ---------------------------------------------------------------------------------------
+ *
+ * The widget's own markup and stylesheet, parked in a box instead of the viewport corner. Only
+ * layout is overridden here; colours, fonts and shapes come from widget.css and the custom CSS.
+ */
+
+.lcft-with-preview {
+	display: grid;
+	grid-template-columns: minmax( 0, 1fr );
+	gap: 8px 32px;
+}
+
+@media ( min-width: 1400px ) {
+
+	.lcft-with-preview {
+		grid-template-columns: minmax( 0, 1fr ) 430px;
+		align-items: start;
+	}
+
+	/* Stays in view while the fields beside it scroll, so each change can be watched landing. */
+	.lcft-preview {
+		position: sticky;
+		top: 46px;
+	}
+}
+
+.lcft-preview {
+	max-width: 430px;
+}
+
+.lcft-preview .lcft-preview__title {
+	margin-top: 1em;
+}
+
+.lcft-preview__states {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	margin-bottom: 8px;
+}
+
+.lcft-preview__states .button.is-active {
+	background: #2271b1;
+	border-color: #2271b1;
+	color: #fff;
+}
+
+.lcft-preview__option {
+	display: inline-block;
+	margin-bottom: 10px;
+}
+
+.lcft-preview__stage {
+	position: relative;
+	height: 620px;
+	overflow: hidden;
+	border: 1px solid #c3c4c7;
+	border-radius: 6px;
+	background: #fff;
+}
+
+/* A few grey lines standing in for the page the bubble floats over. */
+.lcft-preview__page {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	padding: 28px 24px;
+}
+
+.lcft-preview__page span {
+	display: block;
+	height: 12px;
+	border-radius: 6px;
+	background: #f0f0f1;
+}
+
+.lcft-preview__page span:first-child {
+	width: 55%;
+	height: 22px;
+	margin-bottom: 8px;
+}
+
+.lcft-preview__page span:nth-child( 3 ) {
+	width: 85%;
+}
+
+.lcft-preview__page span:last-child {
+	width: 40%;
+}
+
+.lcft-preview .lcft {
+	position: absolute;
+}
+
+.lcft-preview .lcft__panel {
+	max-height: none;
+}
+
+/* widget.css sets display on several of these, which beats the hidden attribute. */
+.lcft-preview [hidden] {
+	display: none !important;
+}
+
+/* The composer is drawn, not usable: a span stands in for the textarea. */
+.lcft-preview .lcft__input {
+	display: block;
+	color: var( --lcft-muted );
+	cursor: default;
+}
+
+.lcft-preview .lcft__attach,
+.lcft-preview .lcft__emoji,
+.lcft-preview .lcft__send,
+.lcft-preview .lcft__close,
+.lcft-preview .lcft__bubble {
+	cursor: default;
+}
+
+.lcft-preview .lcft__bubble:hover {
+	transform: none;
+}
+
+@media ( max-width: 480px ) {
+
+	/* widget.css turns the open panel full screen on phones, which here would cover wp-admin. */
+	.lcft-preview .lcft.is-open .lcft__panel {
+		position: static;
+		width: 370px;
+		max-width: calc( 100vw - 64px );
+		height: 540px;
+		border-radius: var( --lcft-radius );
+	}
+}

@@ -184,7 +184,7 @@ class LCFT_REST {
 		$conversation = LCFT_Conversations::get_by_user( get_current_user_id() );
 
 		if ( ! $conversation ) {
-			return new WP_REST_Response( array( 'messages' => array() ), 200 );
+			return new WP_REST_Response( array_merge( array( 'messages' => array() ), self::schedule_state() ), 200 );
 		}
 
 		// While the member has the chat open, their failed messages are retried here rather than
@@ -195,14 +195,38 @@ class LCFT_REST {
 		$undelivered = LCFT_Conversations::get_undelivered( (int) $conversation->id, 50 );
 
 		return new WP_REST_Response(
-			array(
-				'messages'    => array_map( array( __CLASS__, 'prepare_message' ), $messages ),
-				'open'        => LCFT_Schedule::is_open(),
+			array_merge(
+				array(
+					'messages'    => array_map( array( __CLASS__, 'prepare_message' ), $messages ),
 
-				// Lets the widget stop the waiting animation on messages delivered since.
-				'undelivered' => array_map( 'intval', wp_list_pluck( $undelivered, 'id' ) ),
+					// Lets the widget stop the waiting animation on messages delivered since.
+					'undelivered' => array_map( 'intval', wp_list_pluck( $undelivered, 'id' ) ),
+				),
+				self::schedule_state()
 			),
 			200
+		);
+	}
+
+	/**
+	 * Returns whether the desk is open and, when it is not, the notice to show.
+	 *
+	 * Sent with every poll rather than only when the chat opens: the notice counts down in minutes
+	 * within the last hour, and would otherwise sit frozen at whatever it said on opening.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return array open and notice.
+	 */
+	protected static function schedule_state() {
+
+		$open = LCFT_Schedule::is_open();
+
+		return array(
+			'open'   => $open,
+
+			// The member's details are only looked up when there is a notice to fill them into.
+			'notice' => $open ? '' : LCFT_Format::render( LCFT_Schedule::get_notice(), LCFT_Member::get_tokens( get_current_user_id() ) ),
 		);
 	}
 

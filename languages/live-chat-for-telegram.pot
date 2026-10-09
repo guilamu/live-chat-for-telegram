@@ -774,3 +774,12 @@ msgstr ""
 #: includes/class-lcft-widget.php
 msgid "Yesterday"
 msgstr ""
+
+msgid "Page builders"
+msgstr ""
+
+msgid "Also display the bubble while editing pages"
+msgstr ""
+
+msgid "Off by default: the bubble is hidden in the Divi Visual Builder, the block editor and theme customizer previews, Elementor and Beaver Builder, where it only gets in the way of editing."
+msgstr ""

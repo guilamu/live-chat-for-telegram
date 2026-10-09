@@ -169,6 +169,11 @@ add_filter( 'lcft_should_display', function ( $display ) {
 	return $display && ! is_page( 'checkout' );
 } );
 
+// Treat another editor's preview as a page builder (the bubble is hidden there by default).
+add_filter( 'lcft_is_builder_request', function ( $is_builder ) {
+	return $is_builder || isset( $_GET['my_builder_preview'] );
+} );
+
 // Allow more file types.
 add_filter( 'lcft_allowed_mimes', function ( $mimes ) {
 	$mimes['zip'] = 'application/zip';
@@ -225,6 +230,14 @@ Set a retention period under **Advanced** to delete old messages and their files
 ```
 
 ## Changelog
+
+### 1.2.0 - 2026-10-09
+- **New:** A live preview of the chat beside the Widget and Hours tabs, in each state a visitor can meet it: desk present, desk absent (with the closed message), closed bubble, and signed out invitation. It follows the fields as they are edited, before saving
+- **New:** A timezone setting on the Hours tab. Opening hours used to be read in the site's timezone (Settings › General), which is often still UTC; they can now follow a city or a UTC offset of their own. The tab shows the current time in that zone and whether the desk is open
+- **Improved:** The automatic closed message says when support is back in plain terms: "in 25 min" within the hour, then "from 2:00 pm", "tomorrow, from 9:00 am" or "on Monday, from 9:00 am". It is refreshed while the chat is open, so the countdown keeps up
+
+### 1.1.8 - 2026-10-05
+- **New:** The chat bubble is hidden while editing pages (Divi Visual Builder, block editor and customizer previews, Elementor, Beaver Builder…). A "Page builders" option on the Widget tab shows it again, and the `lcft_is_builder_request` filter adjusts the detection
 
 ### 1.1.7 - 2026-10-05
 - **New:** The conversation shows the date once per day, above that day's first message (Today, Yesterday, then the full date)

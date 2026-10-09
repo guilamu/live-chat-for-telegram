@@ -171,6 +171,7 @@
 
 				if ( field ) {
 					field.value = attachment.url;
+					field.dispatchEvent( new Event( 'input', { bubbles: true } ) );
 				}
 
 				if ( preview ) {
@@ -324,10 +325,174 @@
 		field.dispatchEvent( new Event( 'input', { bubbles: true } ) );
 	}
 
+	/**
+	 * Fills {placeholders} the way LCFT_Format::render() does: known ones replaced, unknown ones
+	 * removed.
+	 *
+	 * @param {string} template The text.
+	 * @param {Object} tokens   Name => value.
+	 * @return {string} The filled text.
+	 */
+	function fillPlaceholders( template, tokens ) {
+		return String( template || '' )
+			.replace( /\{([a-z0-9_]+)\}/gi, function ( match, name ) {
+				return Object.prototype.hasOwnProperty.call( tokens, name ) ? tokens[ name ] : '';
+			} )
+			.trim();
+	}
+
+	/**
+	 * Keeps the preview beside the widget and hours tabs in step with the fields being edited.
+	 *
+	 * Each field is read when present on the page and falls back to the saved value otherwise,
+	 * since only one tab's fields exist at a time.
+	 */
+	function initPreview() {
+		var root = document.querySelector( '[data-lcft-preview]' );
+		var data = window.lcftAdmin.preview;
+
+		if ( ! root || ! data ) {
+			return;
+		}
+
+		var widget = root.querySelector( '[data-lcft-preview-widget]' );
+		var invite = root.querySelector( '[data-lcft-preview-invite]' );
+		var panel = root.querySelector( '[data-lcft-preview-panel]' );
+		var notice = root.querySelector( '[data-lcft-preview-notice]' );
+		var welcome = root.querySelector( '[data-lcft-preview-welcome]' );
+		var name = root.querySelector( '[data-lcft-preview-name]' );
+		var avatar = root.querySelector( '[data-lcft-preview-avatar]' );
+		var hint = root.querySelector( '[data-lcft-preview-hint]' );
+		var sample = root.querySelector( '[data-lcft-preview-sample]' );
+		var buttons = root.querySelectorAll( '[data-lcft-preview-state]' );
+		var state = root.getAttribute( 'data-state' ) || 'present';
+
+		function field( id ) {
+			return document.getElementById( id );
+		}
+
+		function value( id, fallback ) {
+			var input = field( id );
+
+			if ( ! input ) {
+				return fallback;
+			}
+
+			return input.type === 'checkbox' ? input.checked : input.value;
+		}
+
+		// Message times read like the real widget's: the member's own clock, a few minutes ago.
+		Array.prototype.forEach.call( root.querySelectorAll( '[data-lcft-preview-time]' ), function ( meta ) {
+			var date = new Date( Date.now() + parseInt( meta.getAttribute( 'data-lcft-preview-time' ), 10 ) * 60000 );
+
+			try {
+				meta.textContent = new Intl.DateTimeFormat( document.documentElement.lang || undefined, {
+					hour: '2-digit',
+					minute: '2-digit'
+				} ).format( date );
+			} catch ( error ) {
+				meta.textContent = date.toTimeString().slice( 0, 5 );
+			}
+		} );
+
+		function update() {
+			var open = state === 'present' || state === 'absent';
+			var position = value( 'widget_position', data.position ) === 'left' ? 'lcft--left' : 'lcft--right';
+			var accent = value( 'widget_accent', data.accent ) || '#1c3f94';
+			var avatarUrl = value( 'agent_avatar_url', data.avatar );
+			var welcomeText = fillPlaceholders( value( 'welcome_message', data.welcome ), data.tokens );
+			var closedText = fillPlaceholders( value( 'closed_message', data.closedMessage ), data.tokens );
+			var withSample = sample && sample.checked;
+			var hints = [];
+
+			[ widget, invite ].forEach( function ( element ) {
+				element.classList.remove( 'lcft--left', 'lcft--right' );
+				element.classList.add( position );
+				element.style.setProperty( '--lcft-accent', accent );
+			} );
+
+			widget.hidden = state === 'invite';
+			invite.hidden = state !== 'invite';
+			widget.classList.toggle( 'is-open', open );
+			panel.hidden = ! open;
+
+			name.textContent = value( 'agent_name', data.agentName );
+			avatar.hidden = ! avatarUrl;
+
+			if ( avatarUrl && avatar.getAttribute( 'src' ) !== avatarUrl ) {
+				avatar.src = avatarUrl;
+			}
+
+			notice.textContent = closedText || data.autoNotice;
+			notice.hidden = state !== 'absent';
+
+			// As in the widget: the welcome only stands in for an empty conversation.
+			welcome.textContent = welcomeText;
+			welcome.hidden = withSample || ! welcomeText;
+
+			if ( sample ) {
+				sample.closest( 'label' ).hidden = ! open;
+			}
+
+			Array.prototype.forEach.call( root.querySelectorAll( '[data-lcft-preview-sample-item]' ), function ( item ) {
+				item.hidden = ! withSample;
+			} );
+
+			Array.prototype.forEach.call( buttons, function ( button ) {
+				var active = button.getAttribute( 'data-lcft-preview-state' ) === state;
+
+				button.classList.toggle( 'is-active', active );
+				button.setAttribute( 'aria-pressed', active ? 'true' : 'false' );
+			} );
+
+			if ( value( 'widget_theme_accent', data.themeAccent ) ) {
+				hints.push( data.i18n.themeAccent );
+			}
+
+			if ( state === 'absent' && ! closedText ) {
+				hints.push( data.i18n.autoNotice );
+			}
+
+			if ( state === 'invite' && value( 'logged_out_mode', data.inviteMode ) !== 'invite' ) {
+				hints.push( data.i18n.inviteOff );
+			}
+
+			if ( open && welcomeText && withSample ) {
+				hints.push( data.i18n.welcomeOnly );
+			}
+
+			hint.textContent = hints.join( ' ' );
+			hint.hidden = ! hints.length;
+		}
+
+		Array.prototype.forEach.call( buttons, function ( button ) {
+			button.addEventListener( 'click', function () {
+				state = button.getAttribute( 'data-lcft-preview-state' );
+				update();
+			} );
+		} );
+
+		if ( sample ) {
+			sample.addEventListener( 'change', update );
+		}
+
+		// Delegated, so placeholder insertions and the media picker, which fire input events, are
+		// caught along with typing.
+		var form = root.closest( 'form' );
+
+		if ( form ) {
+			form.addEventListener( 'input', update );
+			form.addEventListener( 'change', update );
+		}
+
+		update();
+	}
+
 	document.addEventListener( 'DOMContentLoaded', function () {
 		defendTabs();
 		initMediaPicker();
 		initPlaceholderPickers();
+		initPreview();
 
 		panel = document.getElementById( 'lcft-diagnostics' );
 
