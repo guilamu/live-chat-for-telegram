@@ -29,7 +29,7 @@ class LCFT_DB {
 	 *
 	 * @var string
 	 */
-	const SCHEMA_VERSION = '1';
+	const SCHEMA_VERSION = '2';
 
 	/**
 	 * The option storing the installed schema version.
@@ -85,7 +85,8 @@ class LCFT_DB {
 		) $charset_collate;";
 
 		// Messages are append only. The widget polls with "everything after id N", so the primary
-		// key doubles as the cursor and no timestamp comparison is involved.
+		// key doubles as the cursor and no timestamp comparison is involved. A withdrawn reply keeps
+		// its row, flagged by deleted_at, so polls can tell an open widget to remove it.
 		$messages = 'CREATE TABLE ' . self::messages_table() . " (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			conversation_id bigint(20) unsigned NOT NULL,
@@ -97,6 +98,7 @@ class LCFT_DB {
 			tg_from_name varchar(255) DEFAULT NULL,
 			media_group_id varchar(64) DEFAULT NULL,
 			edited_at datetime DEFAULT NULL,
+			deleted_at datetime DEFAULT NULL,
 			read_at datetime DEFAULT NULL,
 			created_at datetime NOT NULL,
 			PRIMARY KEY  (id),

@@ -201,6 +201,9 @@ class LCFT_REST {
 
 					// Lets the widget stop the waiting animation on messages delivered since.
 					'undelivered' => array_map( 'intval', wp_list_pluck( $undelivered, 'id' ) ),
+
+					// Replies the operator withdrew, which the widget may have drawn already.
+					'deleted'     => LCFT_Conversations::get_deleted_ids( (int) $conversation->id ),
 				),
 				self::schedule_state()
 			),

@@ -508,6 +508,45 @@
 	}
 
 	/**
+	 * Removes the bubbles of replies the operator withdrew after they were drawn.
+	 *
+	 * @param {Array} ids The withdrawn message IDs.
+	 */
+	function removeMessages( ids ) {
+		if ( ! ids || ! ids.length ) {
+			return;
+		}
+
+		ids.forEach( function ( id ) {
+			var bubble = el.log.querySelector( '.lcft-msg[data-id="' + parseInt( id, 10 ) + '"]' );
+
+			if ( ! bubble ) {
+				return;
+			}
+
+			var before = bubble.previousElementSibling;
+			var after = bubble.nextElementSibling;
+
+			bubble.remove();
+
+			// A day separator left with nothing under it would announce a day with no messages.
+			if ( before && before.classList.contains( 'lcft-day' ) && ( ! after || ! after.classList.contains( 'lcft-msg' ) ) ) {
+				before.remove();
+
+				// It was the newest day: the next message of that day needs its separator back.
+				if ( ! after ) {
+					state.lastDay = null;
+				}
+			}
+
+			// An album continues into whatever bubble is now last; this one no longer exists.
+			if ( ! after ) {
+				state.lastGroup = null;
+			}
+		} );
+	}
+
+	/**
 	 * Scrolls the log to the newest message.
 	 */
 	function scrollToEnd() {
@@ -603,6 +642,7 @@
 		api( withQuery( '/messages', { since: state.cursor } ) )
 			.then( function ( data ) {
 				appendMessages( data.messages );
+				removeMessages( data.deleted );
 
 				if ( typeof data.notice === 'string' ) {
 					el.notice.dataset.closed = data.notice;

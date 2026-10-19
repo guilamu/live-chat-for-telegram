@@ -434,6 +434,32 @@ class LCFT_Telegram_API {
 		);
 	}
 
+	/**
+	 * Deletes a message.
+	 *
+	 * In a group, removing anyone's message but the bot's own requires the bot to be an
+	 * administrator with can_delete_messages.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @link https://core.telegram.org/bots/api#deletemessage
+	 *
+	 * @param int|string $chat_id    The chat ID.
+	 * @param int        $message_id The message to delete.
+	 *
+	 * @return array|WP_Error
+	 */
+	public function delete_message( $chat_id, $message_id ) {
+
+		return $this->make_request(
+			'deleteMessage',
+			array(
+				'chat_id'    => $chat_id,
+				'message_id' => $message_id,
+			)
+		);
+	}
+
 
 	// # FORUM TOPICS --------------------------------------------------------------------------------------------------
 

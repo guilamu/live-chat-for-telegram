@@ -369,7 +369,7 @@ class LCFT_Conversations {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM {$table} WHERE conversation_id = %d AND id > %d ORDER BY id ASC LIMIT %d",
+				"SELECT * FROM {$table} WHERE conversation_id = %d AND id > %d AND deleted_at IS NULL ORDER BY id ASC LIMIT %d",
 				(int) $conversation_id,
 				(int) $since_id,
 				(int) $limit
@@ -401,7 +401,7 @@ class LCFT_Conversations {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$rows = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM {$table} WHERE conversation_id = %d ORDER BY id DESC LIMIT %d",
+				"SELECT * FROM {$table} WHERE conversation_id = %d AND deleted_at IS NULL ORDER BY id DESC LIMIT %d",
 				(int) $conversation_id,
 				(int) $limit
 			)
@@ -494,7 +494,7 @@ class LCFT_Conversations {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		return (int) $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(*) FROM {$table} WHERE conversation_id = %d AND direction = %s AND read_at IS NULL",
+				"SELECT COUNT(*) FROM {$table} WHERE conversation_id = %d AND direction = %s AND read_at IS NULL AND deleted_at IS NULL",
 				(int) $conversation_id,
 				self::OUT
 			)
@@ -517,6 +517,72 @@ class LCFT_Conversations {
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		return false !== $wpdb->update( LCFT_DB::messages_table(), $values, array( 'id' => (int) $id ) );
+	}
+
+	/**
+	 * Withdraws a message from the member's view.
+	 *
+	 * The row stays behind as a tombstone with its content cleared: a widget that already drew the
+	 * message only learns it is gone by seeing its ID in get_deleted_ids(), which a plain DELETE
+	 * would leave nothing to report. The file goes at once, since keeping a support file the
+	 * operator chose to take back is exactly what they did not want.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param object $message The message row.
+	 *
+	 * @return bool
+	 */
+	public static function delete_message( $message ) {
+
+		if ( ! empty( $message->attachment_id ) ) {
+
+			$attachment = LCFT_Attachments::get( (int) $message->attachment_id );
+
+			if ( $attachment ) {
+				LCFT_Attachments::delete( $attachment );
+			}
+		}
+
+		return self::update_message(
+			(int) $message->id,
+			array(
+				'body'          => '',
+				'attachment_id' => null,
+				'deleted_at'    => current_time( 'mysql' ),
+			)
+		);
+	}
+
+	/**
+	 * Returns the IDs of the most recently withdrawn messages in a conversation.
+	 *
+	 * Sent with every poll so an open widget can remove bubbles it drew before the operator took
+	 * them back. Capped, because only messages still on someone's screen matter.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param int $conversation_id The conversation.
+	 * @param int $limit           The maximum number of IDs.
+	 *
+	 * @return int[]
+	 */
+	public static function get_deleted_ids( $conversation_id, $limit = 50 ) {
+
+		global $wpdb;
+
+		$table = LCFT_DB::messages_table();
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT id FROM {$table} WHERE conversation_id = %d AND deleted_at IS NOT NULL ORDER BY id DESC LIMIT %d",
+				(int) $conversation_id,
+				(int) $limit
+			)
+		);
+
+		return array_map( 'intval', (array) $ids );
 	}
 
 	/**

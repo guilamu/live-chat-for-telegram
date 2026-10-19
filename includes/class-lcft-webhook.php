@@ -216,6 +216,12 @@ class LCFT_Webhook {
 			return;
 		}
 
+		if ( self::is_delete_command( $message ) ) {
+			self::handle_delete( $conversation, $message );
+
+			return;
+		}
+
 		$body  = self::extract_text( $message );
 		$media = self::extract_media( $message );
 
@@ -284,7 +290,9 @@ class LCFT_Webhook {
 
 		$existing = LCFT_Conversations::get_by_tg_message_id( (int) $conversation->id, (int) $message['message_id'] );
 
-		if ( ! $existing ) {
+		// An edit to a reply already withdrawn would otherwise put its text back in front of the
+		// member.
+		if ( ! $existing || ! empty( $existing->deleted_at ) ) {
 			return;
 		}
 
@@ -295,6 +303,88 @@ class LCFT_Webhook {
 				'edited_at' => current_time( 'mysql' ),
 			)
 		);
+	}
+
+	/**
+	 * Indicates whether a message is the command asking to withdraw a reply.
+	 *
+	 * Telegram never tells a bot that a message was deleted in a group — there is no update for it
+	 * outside business accounts — so deleting a reply in Telegram leaves it on the member's screen.
+	 * The operator instead answers their own reply with this command, and the bot deletes it on
+	 * both sides.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param array $message The Message object.
+	 *
+	 * @return bool
+	 */
+	protected static function is_delete_command( $message ) {
+
+		$text = isset( $message['text'] ) ? trim( (string) $message['text'] ) : '';
+
+		// Telegram appends the bot's username when the command is picked from the menu in a group.
+		return (bool) preg_match( '~^/(?:supprimer|delete|del)(?:@\w+)?$~i', $text );
+	}
+
+	/**
+	 * Withdraws the reply a delete command answers, from the member's chat and from the topic.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param object $conversation The conversation.
+	 * @param array  $message      The command message.
+	 */
+	protected static function handle_delete( $conversation, $message ) {
+
+		$target_id = isset( $message['reply_to_message']['message_id'] ) ? (int) $message['reply_to_message']['message_id'] : 0;
+
+		// In a topic, a message that answers nothing still carries reply_to_message: Telegram points
+		// it at the topic's opening service message, whose ID is the thread ID.
+		if ( ! $target_id || $target_id === (int) $conversation->topic_id ) {
+			self::warn_operator( $conversation, $message, __( 'Reply to the message you want to delete with /supprimer.', 'live-chat-for-telegram' ) );
+
+			return;
+		}
+
+		$target = LCFT_Conversations::get_by_tg_message_id( (int) $conversation->id, $target_id );
+
+		// Only operator replies are the operator's to take back. The member's own messages, and
+		// anything the bot never relayed, stay where they are.
+		if ( ! $target || LCFT_Conversations::OUT !== $target->direction ) {
+			self::warn_operator( $conversation, $message, __( 'Only replies sent to the member can be deleted this way.', 'live-chat-for-telegram' ) );
+
+			return;
+		}
+
+		$api     = lcft_api();
+		$chat_id = $conversation->chat_id;
+
+		// A redelivered command, or a second one on the same reply: the work is done, only the
+		// command itself is left to tidy away.
+		if ( ! empty( $target->deleted_at ) ) {
+			$api->delete_message( $chat_id, (int) $message['message_id'] );
+
+			return;
+		}
+
+		LCFT_Conversations::delete_message( $target );
+
+		$removed = $api->delete_message( $chat_id, $target_id );
+
+		// Without can_delete_messages the member no longer sees the reply, but the topic still
+		// shows it, and nothing there would say it had been withdrawn.
+		if ( is_wp_error( $removed ) ) {
+			self::warn_operator(
+				$conversation,
+				$message,
+				__( 'Deleted from the member’s chat. The bot could not delete it here: give it the “Delete messages” permission, or delete it yourself.', 'live-chat-for-telegram' )
+			);
+
+			return;
+		}
+
+		$api->delete_message( $chat_id, (int) $message['message_id'] );
 	}
 
 	/**

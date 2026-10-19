@@ -27,6 +27,7 @@ Each member gets their own forum topic, created on first contact and reused for 
 - Everyone in the group can answer; members always see one support identity rather than whichever phone replied
 - Each topic is named and pinned with the member's details, pulled from their WordPress account and optionally a Gravity Forms entry
 - A 👀 reaction lands on your reply once the member has read it
+- Take a reply back by answering it with `/supprimer` (or `/delete`): it disappears from the member's chat and from the topic
 
 ## Key Features
 
@@ -114,6 +115,7 @@ These are Telegram's, not the plugin's:
 - **"Support is typing…" is not possible.** The Bot API never tells a bot that a human is typing in a group. The reverse works, and you will see members typing in their topic.
 - **Read receipts only run one way.** The site reacts to your message once the member has seen it. A bot cannot know what group members have read, so members are not told when you read theirs.
 - **Files you send are capped at 20 MB.** `getFile` refuses anything larger, so a bigger reply cannot be mirrored back. You get a warning in the topic rather than silence. Members can upload up to 50 MB in the other direction.
+- **Deleting a reply in Telegram does not remove it from the member's chat.** The Bot API sends no update when a message is deleted in a group. Answer the reply with `/supprimer` instead; the bot then deletes it on both sides (in the topic, provided it has the "Delete messages" admin right).
 - **Voice notes are Ogg/Opus**, which some versions of Safari will not play. The widget falls back to a download link rather than a dead player.
 
 ## Styling
@@ -230,6 +232,9 @@ Set a retention period under **Advanced** to delete old messages and their files
 ```
 
 ## Changelog
+
+### 1.3.0 - 2026-10-19
+- **New:** A reply can be taken back from Telegram. Answer it with `/supprimer` (or `/delete`) in the topic: it disappears from the member's chat, even if already open, and the bot deletes it and the command from the topic. Deleting a reply directly in Telegram cannot work, as the Bot API never reports deletions in a group. Deleting in the topic needs the bot's "Delete messages" admin right; without it the reply still leaves the member's chat and the bot says so in the topic
 
 ### 1.2.0 - 2026-10-09
 - **New:** A live preview of the chat beside the Widget and Hours tabs, in each state a visitor can meet it: desk present, desk absent (with the closed message), closed bubble, and signed out invitation. It follows the fields as they are edited, before saving
